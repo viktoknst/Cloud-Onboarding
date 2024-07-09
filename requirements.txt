@@ -1,0 +1,5 @@
+pymongo
+requests
+docker
+fastapi
+pre-commit
