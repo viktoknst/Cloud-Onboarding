@@ -17,3 +17,17 @@ This is prevented with early returns and function simplification
 A class may exist if and only if it stores at least 2 pieces of data.
 
 If you cant come up with a rational, sane-sounding name for something, dont do it.
+
+Where possible, functions with (important) side effects should not be parts of an expression. Or at least not a complex one.
+
+Ex:
+```
+# Dont
+if object.execute_child() == True:
+	# stuff
+-----------------------------------
+# Do
+success = object.execute_child()
+if success:
+	# stuff
+```
