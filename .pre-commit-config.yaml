@@ -8,3 +8,11 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
+# tests go here
+-   repo: local
+    hooks:
+    -   id: tests-main
+        name: Test main.py
+        entry: python test_main.py
+        language: system
+        types: [python]
