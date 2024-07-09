@@ -13,6 +13,6 @@ repos:
     hooks:
     -   id: tests-main
         name: Test main.py
-        entry: python src/test_main.py
+        entry: python test/test_main.py
         language: system
         types: [python]

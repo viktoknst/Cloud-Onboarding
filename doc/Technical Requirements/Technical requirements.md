@@ -1,4 +1,3 @@
-
 **Deploy** - the service should be like cattle - simple to deploy, easy to shut down/remove.
 
 **Configure** - the service should be customizable and parameterized as best it can.

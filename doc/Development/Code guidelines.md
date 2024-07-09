@@ -1,4 +1,4 @@
-A function may not be bellow 5 rows, unless its a method.
+A function may not be bellow 2 rows, unless its a method.
 
 A function may not be above 30 rows.
 
@@ -17,6 +17,8 @@ This is prevented with early returns and function simplification
 A class may exist if and only if it stores at least 2 pieces of data.
 
 If you cant come up with a rational, sane-sounding name for something, dont do it.
+
+If you cant come up with a sane unit test for something, dont do it.
 
 Where possible, functions with (important) side effects should not be parts of an expression. Or at least not a complex one.
 

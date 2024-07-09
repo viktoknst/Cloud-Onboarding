@@ -1,5 +1,7 @@
+from context import src
+import src.main as main
+
 import pytest
-import main
 
 def test_add_two_nums():
     assert main.add_two_nums(1,2) == 3
