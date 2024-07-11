@@ -16,3 +16,24 @@ repos:
         entry: python test/test_main.py
         language: system
         types: [python]
+-   repo: local
+    hooks:
+    -   id: tests-user-api
+        name: Test api/user_api.py
+        entry: python test/test_user_api.py
+        language: system
+        types: [python]
+-   repo: local
+    hooks:
+    -   id: tests-discovery
+        name: Test api/discovery.py
+        entry: python test/test_discovery.py
+        language: system
+        types: [python]
+-   repo: local
+    hooks:
+    -   id: tests-instance
+        name: Test containerizer/instance.py
+        entry: python test/test_instance.py
+        language: system
+        types: [python]
