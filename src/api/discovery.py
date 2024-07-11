@@ -1,4 +1,4 @@
-from config import ENDPOINTS
+from ..config import ENDPOINTS
 
 from fastapi import APIRouter
 

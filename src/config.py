@@ -7,5 +7,5 @@ ENDPOINTS = {
 }
 
 USER_DB = {
-    'users_dir'     : '/home/sasho_b/Coding/cob2/users'
+    'user_dir'     : '/home/sasho_b/Coding/cob2/users'
 }
