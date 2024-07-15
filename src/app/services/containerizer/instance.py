@@ -2,7 +2,7 @@ from docker.models.containers import Container
 from multiprocessing import Process
 import uuid
 
-from external_dependencies.db_interface
+from external_dependencies.db_interface import DBProxy
 
 class ProjectInstance:
     id: str

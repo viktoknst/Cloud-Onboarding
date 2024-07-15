@@ -1,31 +1,15 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 
 from config import ENDPOINTS
 
 from app.external_dependencies.db_interface import DBProxy
-from src.containerizer.project import Project
+from app.models.project import Project
+from app.schemas.project import *
+from app.services.containerizer import project
+
 
 project_router = APIRouter()
 
-
-class ProjectCreate(BaseModel):
-    user_id: str
-    project_name: str
-
-
-class Project(BaseModel):
-    user_id: str
-    project_name: str
-
-
-class ProjectRunRequest(BaseModel):
-    user_id: str
-    project_id: str
-
-
-class ResultQuery(BaseModel):
-    id: str
 
 
 @project_router.post(ENDPOINTS['project'])
