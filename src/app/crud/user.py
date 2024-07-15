@@ -1,19 +1,57 @@
+from pymongo.database import Database
+from app.models.user import User
+from config import USERS_DIRECTORY
+
+import uuid
 import os
-import
+import re
+import shutil
 
 
-def create(user_name):
-    if re.match(r'^[a-zA-Z0-9_-]{4,16}$', u.user_name) == None:
-        raise HTTPException(409, "Username is invalid")
+def create(db: Database, user_name):
+    if re.match(r'^[a-zA-Z0-9_-]{4,16}$', user_name) == None:
+        return "Username is invalid"
 
-    if os.path.exists(USER_DB['user_dir']+"/"+u.user_name):
-        raise HTTPException(409, "Username is in use!")
+    if db['users'].find_one({'name': user_name}) != None:
+        return "Username is in use!"
 
-    os.mkdir(USER_DB['user_dir']+"/"+u.user_name)
-    return {'msg': 'User created'}
+    if os.path.exists(USERS_DIRECTORY+'/'+user_name):
+        return "Fatal error!"
+        # shutil.rmtree(USERS_DIRECTORY+'/'+user_name)
 
-def read():
+    db['users'].insert_one(
+        {
+            'id': uuid.uuid4(),
+            'name': user_name,
+            'dir': USERS_DIRECTORY+'/'+user_name
+        }
+    )
+    os.mkdir(USERS_DIRECTORY+'/'+user_name)
 
-def update
 
-def delete():
+def read(db: Database, id: str) -> User:
+    result = db['users'].find_one({'id':id})
+    return User(result['id'], result['name'])
+
+
+def update(db: Database, user: User) -> User:
+    result = db['users'].find_one({'id':user.id})
+
+    db['users'].update_one(
+        {
+            'name': user.name
+        }
+    )
+
+
+def delete(db: Database, id: str):
+    result = db['users'].find_one({'id':id})
+
+    if result == None:
+        return "User not found"
+
+    if not os.path.exists(result['dir']):
+        return "Faulty deletion; Aborting"
+
+    db['users'].delete_one({'id':id})
+    shutil.rmtree(result['dir'])

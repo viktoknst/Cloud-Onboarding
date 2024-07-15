@@ -8,6 +8,6 @@ ENDPOINTS = {
     'result'        : '/result',
 }
 
-USER_DB = {
+USERS_DIRECTORY = {
     'user_dir'     : '/home/sasho_b/Coding/cob2/users'
 }
