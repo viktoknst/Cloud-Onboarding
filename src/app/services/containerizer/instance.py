@@ -2,7 +2,7 @@ from docker.models.containers import Container
 from multiprocessing import Process
 import uuid
 
-import src.db_interface as db_interface
+from external_dependencies.db_interface
 
 class ProjectInstance:
     id: str
