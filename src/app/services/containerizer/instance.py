@@ -2,6 +2,8 @@ from docker.models.containers import Container
 from multiprocessing import Process
 import uuid
 
+from external_dependencies.db_interface
+
 class ProjectInstance:
     id: str
     container: Container

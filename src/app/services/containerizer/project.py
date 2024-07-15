@@ -1,8 +1,6 @@
 import docker
 from docker.models.images import Image
-
 from pathlib import Path
-import uuid
 
 from app.models.project import Project
 from app.services.containerizer.instance import ProjectInstance
@@ -10,10 +8,7 @@ from app.services.containerizer.instance import ProjectInstance
 
 ROOT = Path("/home/sasho_b/Coding/cob/docker")
 DOCKER_TEMPLATE = Path(ROOT, "dockerfile_template")
-
 CLIENT = docker.from_env()
-
-
 
 
 def create_detached_instance(p: Project):

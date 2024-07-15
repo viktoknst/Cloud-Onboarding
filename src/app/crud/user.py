@@ -31,7 +31,11 @@ def create(db: Database, user_name):
 
 def read(db: Database, id: str) -> User:
     result = db['users'].find_one({'id':id})
-    return User(result['id'], result['name'])
+    return User(
+        result['id'],
+        result['name'],
+        result['dir']
+    )
 
 
 def update(db: Database, user: User) -> User:
