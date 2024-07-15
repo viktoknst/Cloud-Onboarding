@@ -31,6 +31,10 @@ def create(db: Database, user_name):
 
 def read(db: Database, id: str) -> User:
     result = db['users'].find_one({'id':id})
+
+    if result == None:
+        return "User not found error!"
+
     return User(
         result['id'],
         result['name'],
