@@ -3,7 +3,9 @@ ENDPOINTS = {
     'create_user'   : '/new',
     'login'         : '/login',
     'user'          : '/user',
-    'project'       : '/project'
+    'project'       : '/project',
+    'create_project' : '/project/new',
+    'result'        : '/result',
 }
 
 USER_DB = {

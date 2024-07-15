@@ -5,7 +5,7 @@ import pytest
 from unittest.mock import patch
 import time
 
-from src.containerizer import instance
+from src.containerizer.instance import *
 
 class DummyContainer:
     def __init__(self):
@@ -31,11 +31,9 @@ def assert_update(resa, resb):
     assert resb == {'$set': {'status': 'done', 'result': 'Hello World!'}}
     print('assertion 2 passed')
 
-
 def test_project_instance():
-
-    with patch('db_interface.results.insert_one', new=assert_insertion), patch('db_interface.results.update_one', new=assert_update), patch('uuid.uuid4', new=dummy_uuid):
-        inst = instance.ProjectInstance(DummyContainer())
+    with patch('src.db_interface.results.insert_one', new=assert_insertion), patch('src.db_interface.results.update_one', new=assert_update), patch('uuid.uuid4', new=dummy_uuid):
+        inst = ProjectInstance(DummyContainer())
         print('Main thread:')
         inst.run()
 
@@ -45,7 +43,7 @@ def test_project_instance():
         print('main exiting... (not really)')
         time.sleep(1)
 
-        inst2 = instance.ProjectInstance(DummyContainer())
+        inst2 = ProjectInstance(DummyContainer())
 
         print('Separate thread:')
         inst2.start()

@@ -1,6 +1,6 @@
-from ..config import ENDPOINTS
-
 from fastapi import APIRouter
+
+from src.config import ENDPOINTS
 
 discovery_router = APIRouter()
 
