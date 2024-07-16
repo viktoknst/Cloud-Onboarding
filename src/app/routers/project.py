@@ -7,13 +7,14 @@ from app.models.project import Project
 from app.schemas.project import *
 from app.services.containerizer import project
 import app.crud.project as project_crud
-
+import app.services.containerizer.project as project_service
 
 project_router = APIRouter()
 
 
 @project_router.post(ENDPOINTS['project'])
-def create_project(p: ProjectCreate, db: Database = Depends(DBProxy.get_instance().get_db())):
+def create_project(p: ProjectCreate):
+    db = DBProxy.get_instance().get_db()
     result = project_crud.create(db, p.user_id, p.project_name)
     if result!= None:
         raise HTTPException(409, result)
@@ -44,10 +45,10 @@ def post_run_project(r: ProjectRunRequest):
     #os.mkdir(USER_DB['user_dir']+"/"+get_user().user_name+'/'+p.project_name)
     #return {'msg': 'Project created'}
     project = Project(r.project_id)
-    id = Project.create_detached_instance()
+    id = project_service.create_detached_instance(Project)
     return id
 
 
-@project_router.get(ENDPOINTS['result'])
-def get_result(g: ResultRequest):
-    return
+#@project_router.get(ENDPOINTS['result'])
+#def get_result(g: ResultRequest):
+#    return
