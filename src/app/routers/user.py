@@ -30,6 +30,7 @@ def read_user(u: UserRead):
         raise HTTPException(404, result)
     return User(result.id, result.name)
 
+
 @user_router.put(ENDPOINTS['user'])
 def update_user():
     pass
