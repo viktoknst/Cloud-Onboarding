@@ -13,7 +13,7 @@ import app.crud.user as user_crud
 user_router = APIRouter()
 
 
-@user_router.post(ENDPOINTS['create_user'])
+@user_router.post(ENDPOINTS['user'])
 def create_user(u: UserCreate):
     db: Database = DBProxy.get_instance().get_db()
     result = user_crud.create(db, u.user_name)
@@ -23,9 +23,12 @@ def create_user(u: UserCreate):
 
 
 @user_router.get(ENDPOINTS['user'])
-def read_user():
-    pass
-
+def read_user(u: UserRead):
+    db: Database = DBProxy.get_instance().get_db()
+    result = user_crud.read(db, u.id)
+    if isinstance(result, str):
+        raise HTTPException(404, result)
+    return User(result.id, result.name)
 
 @user_router.put(ENDPOINTS['user'])
 def update_user():
@@ -33,5 +36,9 @@ def update_user():
 
 
 @user_router.delete(ENDPOINTS['user'])
-def delete_user():
-    pass
+def delete_user(u: UserDelete):
+    db: Database = DBProxy.get_instance().get_db()
+    result = user_crud.delete(db, u.id)
+    if result != None:
+        raise HTTPException(400, result)
+    return {'msg': 'User deleted'}

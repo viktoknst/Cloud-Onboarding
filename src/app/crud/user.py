@@ -29,7 +29,7 @@ def create(db: Database, user_name):
     os.mkdir(USERS_DIRECTORY+'/'+user_name)
 
 
-def read(db: Database, id: str) -> User:
+def read(db: Database, id: str) -> User | str:
     result = db['users'].find_one({'id':id})
 
     if result == None:
