@@ -7,7 +7,7 @@ from app.models.project import Project
 from app.schemas.project import *
 from app.services.containerizer import project
 import app.crud.project as project_crud
-
+import app.services.containerizer.project as project_service
 
 project_router = APIRouter()
 
@@ -45,7 +45,7 @@ def post_run_project(r: ProjectRunRequest):
     #os.mkdir(USER_DB['user_dir']+"/"+get_user().user_name+'/'+p.project_name)
     #return {'msg': 'Project created'}
     project = Project(r.project_id)
-    id = Project.create_detached_instance()
+    id = project_service.create_detached_instance(Project)
     return id
 
 
