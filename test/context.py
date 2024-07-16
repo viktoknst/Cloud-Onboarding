@@ -11,7 +11,7 @@
 import os
 import sys
 # black magic that makes the test workdir test/..
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-import src
-import src.config as config
+import app.special.config as config
+import app
