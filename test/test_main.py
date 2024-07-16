@@ -1,7 +1,7 @@
-from context import src
+from context import app
 import pytest
 
-import src.test as test
+import app.special.test as test
 
 
 def test_add_two_nums():

@@ -1,6 +1,6 @@
 from pymongo.database import Database
 from app.models.user import User
-from config import USERS_DIRECTORY
+from app.special.config import USERS_DIRECTORY
 
 import uuid
 import os

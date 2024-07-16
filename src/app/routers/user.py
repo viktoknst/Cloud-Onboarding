@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
-from src.config import ENDPOINTS
+from app.special.config import ENDPOINTS
 
 from app.external_dependencies.db_interface import DBProxy
 from pymongo.database import Database
