@@ -1,35 +1,16 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-
 from config import ENDPOINTS
 
 from app.external_dependencies.db_interface import DBProxy
-from src.containerizer.project import Project
+from app.models.project import Project
+from app.schemas.project import *
+from app.services.containerizer import project
 
 project_router = APIRouter()
 
 
-class ProjectCreate(BaseModel):
-    user_id: str
-    project_name: str
-
-
-class Project(BaseModel):
-    user_id: str
-    project_name: str
-
-
-class ProjectRunRequest(BaseModel):
-    user_id: str
-    project_id: str
-
-
-class ResultQuery(BaseModel):
-    id: str
-
-
 @project_router.post(ENDPOINTS['project'])
-def create_project(p: ProjectCreationRequest):
+def create_project(p: ProjectCreate):
     if re.match(r'^[a-zA-Z0-9_-]{4,16}$', p.project_name) == None:
         raise HTTPException(409, "Project name is invalid")
     if os.path.exists(USER_DB['user_dir']+'/'+get_user(p.user_id)+'/'+p.project_name):

@@ -11,6 +11,18 @@ DOCKER_TEMPLATE = Path(ROOT, "dockerfile_template")
 CLIENT = docker.from_env()
 
 
+def fillout_template(p: Project) -> None:
+    template = ''
+    entry_file = Path(p.entry_file)
+
+    with open(DOCKER_TEMPLATE, 'r') as file:
+        template = file.read()
+        template = template.replace('{entry_file}', entry_file.name)
+
+    with open(Path(p.source_dir,"Dockerfile"), "w+") as save_to:
+        save_to.write(template)
+
+
 def create_detached_instance(p: Project):
     fillout_template()
 
@@ -23,18 +35,6 @@ def create_detached_instance(p: Project):
     image.remove(force=True)
 
     return instance.id
-
-
-def fillout_template(p: Project) -> None:
-    template = ''
-    entry_file = Path(p.entry_file)
-
-    with open(DOCKER_TEMPLATE, 'r') as file:
-        template = file.read()
-        template = template.replace('{entry_file}', entry_file.name)
-
-    with open(Path(p.source_dir,"Dockerfile"), "w+") as save_to:
-        save_to.write(template)
 
 
 if __name__ == '__main__':

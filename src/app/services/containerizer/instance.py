@@ -2,27 +2,34 @@ from docker.models.containers import Container
 from multiprocessing import Process
 import uuid
 
-from external_dependencies.db_interface
+from pymongo.database import Database
+import app.crud.result as results
+from app.models.result import Result
 
 class ProjectInstance:
     id: str
     container: Container
+    db: Database
     thread: Process
-    def __init__(self, container: Container):
+
+
+    def __init__(self, container: Container, db: Database):
         self.id = str(uuid.uuid4())
         #self.id = Container.id_attribute
         self.container = container
-
+        self.db = db
         thread = Process(target=self.run, args=[])
         thread.daemon = False
         self.thread = thread
 
+
     def run(self):
-        db_interface.results.insert_one({'uuid': self.id, 'status': 'running'})
+        results.create(self.db, self.id)
         self.container.start()
         self.container.wait() # takes a long while...
         result = self.container.logs().decode()
-        db_interface.results.update_one({'uuid': self.id},{'$set':{'status': 'done', 'result':result}})
+        results.update(self.db, Result(self.id, result))
+
 
     def start(self):
         self.thread.start()
