@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from src.app.routers.discovery import discovery_router
-#from src.app.routers.project import project_router
+from src.app.routers.project import project_router
 #from src.app.routers.user import user_router
 
 app = FastAPI()

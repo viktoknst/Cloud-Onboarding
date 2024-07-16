@@ -1,18 +1,22 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from config import ENDPOINTS
 
 from app.external_dependencies.db_interface import DBProxy
+from pymongo.database import Database
 from app.models.project import Project
 from app.schemas.project import *
 from app.services.containerizer import project
+import app.crud.project as project_crud
+
 
 project_router = APIRouter()
 
 
 @project_router.post(ENDPOINTS['project'])
-def create_project(p: ProjectCreate):
-    if re.match(r'^[a-zA-Z0-9_-]{4,16}$', p.project_name) == None:
-        raise HTTPException(409, "Project name is invalid")
+def create_project(p: ProjectCreate, db: Database = Depends(DBProxy.get_instance().get_db())):
+    result = project_crud.create(db, p.user_id, p.project_name)
+
+    raise HTTPException(409, "Project name is invalid")
     if os.path.exists(USER_DB['user_dir']+'/'+get_user(p.user_id)+'/'+p.project_name):
         raise HTTPException(409, "Project name is in use!")
     os.mkdir(USER_DB['user_dir']+"/"+get_user(p.user_id)+'/'+p.project_name)
