@@ -7,7 +7,6 @@ from app.external_dependencies.db_interface import DBProxy
 from pymongo.database import Database
 from app.models.user import User
 from app.schemas.user import *
-from app.services.containerizer import user
 import app.crud.user as user_crud
 
 
@@ -23,16 +22,16 @@ def create_user(u: UserCreate):
     return {'msg': 'User created'}
 
 
-@user_router.get()
+@user_router.get(ENDPOINTS['user'])
 def read_user():
     pass
 
 
-@user_router.put()
+@user_router.put(ENDPOINTS['user'])
 def update_user():
     pass
 
 
-@user_router.delete()
+@user_router.delete(ENDPOINTS['user'])
 def delete_user():
     pass
