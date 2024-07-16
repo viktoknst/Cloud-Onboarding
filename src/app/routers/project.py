@@ -15,11 +15,8 @@ project_router = APIRouter()
 @project_router.post(ENDPOINTS['project'])
 def create_project(p: ProjectCreate, db: Database = Depends(DBProxy.get_instance().get_db())):
     result = project_crud.create(db, p.user_id, p.project_name)
-
-    raise HTTPException(409, "Project name is invalid")
-    if os.path.exists(USER_DB['user_dir']+'/'+get_user(p.user_id)+'/'+p.project_name):
-        raise HTTPException(409, "Project name is in use!")
-    os.mkdir(USER_DB['user_dir']+"/"+get_user(p.user_id)+'/'+p.project_name)
+    if result!= None:
+        raise HTTPException(409, result)
     return {'msg': 'Project created'}
 
 
