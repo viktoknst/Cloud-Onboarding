@@ -36,6 +36,9 @@ def delete_project():
     pass
 
 
+#          NOT CRUD \/ \/ \/
+
+
 @project_router.post(ENDPOINTS['project'])
 def post_run_project(r: ProjectRunRequest):
     #if re.match(r'^[a-zA-Z0-9_-]{4,16}$', p.project_name) == None:
