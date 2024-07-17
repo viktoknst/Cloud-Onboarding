@@ -1,7 +1,7 @@
-from context import src
+from context import app
 import pytest
 
-import src.api.discovery as discovery
+import app.routers.discovery as discovery
 import app.special.config
 
 def test_get_discovery():

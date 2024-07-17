@@ -1,11 +1,11 @@
-from context import src
+from context import app
 from context import config
 
 import pytest
 from unittest.mock import patch
 import time
 
-from src.containerizer.instance import *
+from app.services.containerizer.instance import *
 
 class DummyContainer:
     def __init__(self):
