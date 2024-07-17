@@ -33,13 +33,29 @@ def create(db: Database, user_id: str, project_name):
     os.mkdir(user['dir']+'/'+project_name) # replace with mktemp -d, creates a randomly named, non-existant directory
 
 
-def read():
-    pass
+def read(db: Database, id: str):
+    return db['projects'].find_one(
+        {
+            'id': id,
+        }
+    )
 
 
 def update(db: Database, p: Project):
-    pass
+    db['projects'].update_one(
+        {
+            #'id':,
+            'name': p.project_name,
+            'entry_file': p.entry_file,
+            'source_dir': p.entry_file,
+            #'user_id': user_id
+        }
+    )
 
 
-def delete():
-    pass
+def delete(db: Database, id: str):
+    return db['projects'].delete_one(
+        {
+            'id': id,
+        }
+    )
