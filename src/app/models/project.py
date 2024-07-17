@@ -5,7 +5,6 @@ class Project:
     source_dir: str
     user_id: str
 
-
     def __init__(self, id: str, name: str, entry_file: str, source_dir: str, user_id: str):
         self.id = id
         self.name = name
