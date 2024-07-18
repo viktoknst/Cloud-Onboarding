@@ -11,6 +11,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from typing_extensions import Annotated
 
+from app.external_dependencies.db_interface import DBProxy
+from pymongo.database import Database
+from hashlib import sha256
+
+
 fake_users_db = {
     "johndoe": {
         "username": "johndoe",
@@ -31,22 +36,12 @@ fake_users_db = {
 app = FastAPI()
 
 
-def fake_hash_password(password: str):
-    return "fakehashed" + password
-
+def hash_password(password: str, user_name: str):
+    db = ''
+    salt = db['user'].find_one({'name': user_name})['salt']
+    return sha256(str(password, salt))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
-class User(BaseModel):
-    username: str
-    email: Union[str, None] = None
-    full_name: Union[str, None] = None
-    disabled: Union[bool, None] = None
-
-
-class UserInDB(User):
-    hashed_password: str
 
 
 def get_user(db, username: str):
@@ -84,11 +79,12 @@ async def get_current_active_user(
 # may or may not be vulnerable to timing attacks...
 @app.post("/token")
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    #db: Database = DBProxy.get_instance().get_db()
     user_dict = fake_users_db.get(form_data.username)
     if not user_dict:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
-    hashed_password = fake_hash_password(form_data.password)
+    hashed_password = hash_password(form_data.password)
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
