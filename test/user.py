@@ -10,6 +10,29 @@ def login_process():
         pass # do nothing, user exists
     result = requests.post(SERVER_URL+'/token', json={'user_name':'John Doe','password':'1234'})
     print(result.text)
+    token = result.json()['access_token']
+    return token
+
+def use_token(token: str):
+    try:
+        result = requests.get(SERVER_URL+"/secure-endpoint", headers={"Authorization": f"Bearer {token}"})
+        print(result.text)
+    except:
+        print(result.text)
+        pass # do nothing, user exists
+    try:
+        result = requests.get(SERVER_URL+"/secure-endpoint", headers={"Authorization": f"Bearer Hi.there"})
+        print(result.text)
+    except:
+        print(result.text)
+        pass # do nothing, user exists
+    try:
+        result = requests.get(SERVER_URL+"/secure-endpoint")
+        print(result.)
+    except:
+        print(result)
+        pass # do nothing, user exists
 
 if __name__ == "__main__":
-    login_process()
+    token = login_process()
+    use_token(token)

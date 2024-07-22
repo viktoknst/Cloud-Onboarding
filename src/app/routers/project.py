@@ -21,9 +21,10 @@ def create_project(p: ProjectCreate):
 
 
 @project_router.get(ENDPOINTS['project'])
-def read_project():
+def read_project(p: ProjectCreate):
+    db = DBProxy.get_instance().get_db()
+    # project_crud.read(db, )
     pass
-
 
 @project_router.put(ENDPOINTS['project'])
 def update_project():

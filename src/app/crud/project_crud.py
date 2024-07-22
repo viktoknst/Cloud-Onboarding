@@ -23,7 +23,7 @@ def create(db: Database, user_id: str, project_name):
 
     db['projects'].insert_one(
         {
-            'id': uuid.uuid4(),
+            'id': str(uuid.uuid4()),
             'name': project_name,
             'entry_file': None,
             'source_dir': None,

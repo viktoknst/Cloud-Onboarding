@@ -56,8 +56,9 @@ def read(db: Database, id: str | None = None, name: str | None = None) -> User |
     return User(
         result['id'],
         result['name'],
-        result['password'],
-        result['dir']
+        result['dir'],
+        result['password_hash'],
+        result['salt'],
     )
 
 #def read(db: Database, id: str) -> User | str:
