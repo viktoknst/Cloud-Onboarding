@@ -1,12 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.special.config import ENDPOINTS
 
+import app.crud.project_crud as project_crud
 from app.external_dependencies.db_interface import DBProxy
-from pymongo.database import Database
 from app.models.project import Project
 from app.schemas.project import *
 from app.services.containerizer import project
-import app.crud.project as project_crud
 import app.services.containerizer.project as project_service
 
 project_router = APIRouter()

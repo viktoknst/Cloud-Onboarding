@@ -7,11 +7,14 @@ from hashlib import sha256
 
 SECRET = "secret".encode() # CHANGE THIS
 
+def gen_salt():
+    with open('/dev/urandom', 'br') as fp:
+        random = fp.read(32)
+        return base64.b64encode(random).decode('utf-8')
 
-def hash_password(password: str, user_name: str):
+def hash_password(password: str, user_name: str, salt: str):
     db = ''
-    salt = db['user'].find_one({'name': user_name})['salt']
-    return sha256(str(password, salt))
+    return sha256((password + salt).encode()).hexdigest()
 
 
 def str_to_base64(string: str) -> bytes:

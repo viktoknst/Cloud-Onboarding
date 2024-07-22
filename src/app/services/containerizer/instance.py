@@ -3,7 +3,7 @@ from multiprocessing import Process
 import uuid
 
 from pymongo.database import Database
-import app.crud.result as results
+import app.crud.result_crud as results
 from app.models.result import Result
 
 class ProjectInstance:
