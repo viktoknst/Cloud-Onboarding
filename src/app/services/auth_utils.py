@@ -13,7 +13,6 @@ def gen_salt():
         return base64.b64encode(random).decode('utf-8')
 
 def hash_password(password: str, user_name: str, salt: str):
-    db = ''
     return sha256((password + salt).encode()).hexdigest()
 
 
@@ -36,9 +35,9 @@ def gen_auth_token(
     cty: str = "JWT"
     ):
     DEFAULT_EXPIRY = 15 * 60 # 15 mins
-    if iat == None:
+    if iat is None:
         iat = str(int(time.time())) # warning: dumb code, and time is NOT posix conformant on... i'd guess microwaves
-    if exp == None:
+    if exp is None:
         exp = str(int(time.time()+DEFAULT_EXPIRY))
     if alg != 'HS256':
         raise Exception("Algorythm not supported or DNE")
@@ -80,7 +79,7 @@ def validate_auth_token(token: str):
     try:
         header64s, payload64s, signature64s = token.split('.')
         unpacked = unpack_auth_token(token)
-    except:
+    except Exception:
         return ('Malformed token', None)
 
     if unpacked['payload']['iss'] != 'Bicagis':
@@ -98,25 +97,25 @@ def validate_auth_token(token: str):
     return ('OK', unpacked)
 
 
-if __name__ == "__main__":
-    payload = json.dumps({
-        "loggedInAs": "admin",
-        "iat": 1422779638
-    }).encode()
-    #payload = '{"loggedInAs":"admin","iat":1422779638}'.encode()
-    header = json.dumps({
-        "alg": "HS256",
-        "typ": "JWT"
-    }).encode()
-    #header = '{"alg":"HS256","typ":"JWT"}'.encode()
-    secret = b'secretkey'
-    payload64 = base64.urlsafe_b64encode(payload)
-    header64 = base64.urlsafe_b64encode(header)
-    signature = hmac.new(secret, header64+b'.'+payload64, sha256).digest()
-    signature64 = base64.urlsafe_b64encode(signature)
-    token = header64+b'.'+payload64+b'.'+signature64
-    token = token.decode()
-    assert token == 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJsb2dnZWRJbkFzIjogImFkbWluIiwgImlhdCI6IDE0MjI3Nzk2Mzh9.5q7_W0yEwPe6-0eMAIbWDfWxh7ZBt5U0Fr4L23eTq3Q='
-
-    token = gen_auth_token('John')
-    print(validate_auth_token(token))
+#if __name__ == "__main__":
+#    payload = json.dumps({
+#        "loggedInAs": "admin",
+#        "iat": 1422779638
+#    }).encode()
+#    #payload = '{"loggedInAs":"admin","iat":1422779638}'.encode()
+#    header = json.dumps({
+#        "alg": "HS256",
+#        "typ": "JWT"
+#    }).encode()
+#    #header = '{"alg":"HS256","typ":"JWT"}'.encode()
+#    secret = b'secretkey'
+#    payload64 = base64.urlsafe_b64encode(payload)
+#    header64 = base64.urlsafe_b64encode(header)
+#    signature = hmac.new(secret, header64+b'.'+payload64, sha256).digest()
+#    signature64 = base64.urlsafe_b64encode(signature)
+#    token = header64+b'.'+payload64+b'.'+signature64
+#    token = token.decode()
+#    assert token == 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJsb2dnZWRJbkFzIjogImFkbWluIiwgImlhdCI6IDE0MjI3Nzk2Mzh9.5q7_W0yEwPe6-0eMAIbWDfWxh7ZBt5U0Fr4L23eTq3Q='
+#
+#    token = gen_auth_token('John')
+#    print(validate_auth_token(token))

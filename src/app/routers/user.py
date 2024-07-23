@@ -30,15 +30,15 @@ def create_user(u: UserCreate):
 #    return User(result.id, result.name)
 
 
-#@user_router.put(ENDPOINTS['user'])
-#def update_user():
-#    pass
+@user_router.put(ENDPOINTS['user'])
+def update_user(body: UpdateUsers):
+    pass
 
 
 @user_router.delete(ENDPOINTS['user'])
-def delete_user(u: UserDelete, d = Depends()):
+def delete_user(body: UserDelete):
     db = DBProxy.get_instance().get_db()
-    result = user_crud.delete(db, u.id)
+    result = user_crud.delete(db, body.id)
     if result != None:
         raise HTTPException(400, result)
     return {'msg': 'User deleted'}

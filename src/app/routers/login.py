@@ -1,7 +1,7 @@
 # TODO: export login logic to a service script, like auth_utils
 from typing_extensions import Annotated
 
-from fastapi import Depends, HTTPException, APIRouter, status
+from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 
@@ -15,9 +15,9 @@ login_router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-# may or may not be vulnerable to timing attacks...
 @login_router.post("/token")
 async def token(r: LoginSchema):
+    # may or may not be vulnerable to timing attacks...
     db = DBProxy.get_instance().get_db()
     user = user_crud.read(db, name = r.user_name)
     if not user:

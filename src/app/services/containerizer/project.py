@@ -1,6 +1,6 @@
-import docker
-from docker.models.images import Image
 from pathlib import Path
+
+import docker
 
 from app.models.project import Project
 from app.services.containerizer.instance import ProjectInstance
@@ -15,16 +15,16 @@ def fillout_template(p: Project) -> None:
     template = ''
     entry_file = Path(p.entry_file)
 
-    with open(DOCKER_TEMPLATE, 'r') as file:
+    with open(DOCKER_TEMPLATE, 'r', encoding='utf-8') as file:
         template = file.read()
         template = template.replace('{entry_file}', entry_file.name)
 
-    with open(Path(p.source_dir,"Dockerfile"), "w+") as save_to:
+    with open(Path(p.source_dir,"Dockerfile"), "w+", encoding='utf-8') as save_to:
         save_to.write(template)
 
 
 def create_detached_instance(p: Project):
-    fillout_template()
+    fillout_template(p)
 
     image = CLIENT.images.build(path=str(p.source_dir), rm=True)[0] # rm=True OR IT BREAKS!
 
@@ -38,6 +38,6 @@ def create_detached_instance(p: Project):
 
 
 if __name__ == '__main__':
-    p = Project('/home/sasho_b/Coding/debug_cob/main.py', '/home/sasho_b/Coding/debug_cob')
-    id = create_detached_instance(p)
+    project = Project('/home/sasho_b/Coding/debug_cob/main.py', '/home/sasho_b/Coding/debug_cob')
+    id = create_detached_instance(project)
     print(id)

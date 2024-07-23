@@ -1,11 +1,12 @@
-from pymongo.database import Database
-from app.models.user import User
-from app.special.config import USERS_DIRECTORY
-
 import uuid
 import os
 import re
 import shutil
+
+from pymongo.database import Database
+
+from app.models.user import User
+from app.special.config import USERS_DIRECTORY
 from app.services import auth_utils
 
 # import asyncio.locks TODO: we have 0 protection against concurent user creation:
