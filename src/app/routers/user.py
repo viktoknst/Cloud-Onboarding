@@ -16,7 +16,7 @@ user_router = APIRouter()
 def create_user(u: UserCreate):
     db = DBProxy.get_instance().get_db()
     result = user_crud.create(db, u.user_name, u.password)
-    if result != None:
+    if result is not None:
         raise HTTPException(409, result)
     return {'msg': 'User created'}
 

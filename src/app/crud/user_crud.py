@@ -1,3 +1,7 @@
+"""
+Module that handles CRUD operations for users in the DB
+"""
+
 import uuid
 import os
 import re
@@ -22,10 +26,10 @@ def create(db: Database, user_name, password):
     salt = auth_utils.gen_salt()
     password_hash = auth_utils.hash_password(password, user_name, salt)
 
-    if re.match(r'^[a-zA-Z0-9 _-]{4,16}$', user_name) == None:
+    if re.match(r'^[a-zA-Z0-9 _-]{4,16}$', user_name) is None:
         return "Username is invalid"
 
-    if db['users'].find_one({'name': user_name}) != None:
+    if db['users'].find_one({'name': user_name}) is not None:
         return "Username is in use!"
 
     if os.path.exists(USERS_DIRECTORY+'/'+user_name):
@@ -45,21 +49,21 @@ def create(db: Database, user_name, password):
 
 
 def read(db: Database, id: str | None = None, name: str | None = None) -> User | str:
-    result = None
-    if id != None:
-        result = db['users'].find_one({'id':id})
-    if name != None:
-        result = db['users'].find_one({'name':name})
+    user_dict = None
+    if id is not None:
+        user_dict = db['users'].find_one({'id':id})
+    if name is not None:
+        user_dict = db['users'].find_one({'name':name})
 
-    if result == None:
+    if user_dict is None:
         return "User not found error!"
 
     return User(
-        result['id'],
-        result['name'],
-        result['dir'],
-        result['password_hash'],
-        result['salt'],
+        user_dict['id'],
+        user_dict['name'],
+        user_dict['dir'],
+        user_dict['password_hash'],
+        user_dict['salt'],
     )
 
 #def read(db: Database, id: str) -> User | str:

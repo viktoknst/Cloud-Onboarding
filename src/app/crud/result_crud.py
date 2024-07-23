@@ -1,3 +1,7 @@
+"""
+Module that handles CRUD operations for results in the DB
+"""
+
 from pymongo.database import Database
 
 from app.models.result import Result
