@@ -1,4 +1,5 @@
-### Functional requirements
+This document describes the requirements the product should cover - functional and technical, with levels of need (MUST - the product is not considered functional if these are not met, SHOULD - the product can function without these requirements, NICE-TO - possible future editions)
+## Functional requirements
 MUST - The ability to CRUD user profiles via HTTP.
 
 MUST - The ability to CRUD and execute projects...
@@ -6,7 +7,7 @@ NICE-TO - ...in different languages (provided by the service instance), with sai
 
 MUST - The ability to get results from specific execution instances.
 
-### Technical requirements
+## Technical requirements
 MUST - Be responsive. Requests shouldn't hang.
 
 SHOULD - Minimize system resource usage via timeouts/code validation.

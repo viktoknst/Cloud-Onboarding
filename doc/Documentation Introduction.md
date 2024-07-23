@@ -9,13 +9,15 @@ Different sections are intended for different audiences - business, users and de
 For ease of use, some documents contain Obsidian links to sections in other relevant documents.
 
 **For relevant information on how to write new documentation, consult [[Documentation standard and formatting]]**
+
+For the purposes of the documentation, the terms *product* and *project* are used interchangeably, with *product* being used when being referred to in Business and End user - relevant info, and *project* for developer documents.
 ## Sections
 The sections are as listed bellow, along with brief information as to what they contain.
-##### [[Business documentation Introduction |Business documentation]]
-This section concerns the project overview - what issues does the product solve, what its target user base is, what use and functional requirements should it cover.
+##### [[Product documentation Introduction |Business documentation]]
+This section concerns the product overview - what issues does the product solve, what its target user base is, what use and functional requirements should it cover.
 ##### [[End user manual Introduction |End user manual]]
 This section concerns the end product - the resulting app to be used, distributed, etc.
 It includes what the application is, how it is installed, managed, used, as well as references to technical guides on how to troubleshoot it.
 ##### [[Source code documentation Introduction|Source code documentation]]
-This section concerns the source code - the program code in which the product is developed, as well as apps needed for development, how to install, deploy, troubleshoot, understand and modify the product. 
+This section concerns the source code - the program code in which the project is developed, as well as apps needed for development, how to install, deploy, troubleshoot, understand and modify the project. 
 
