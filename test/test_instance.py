@@ -34,20 +34,17 @@ def assert_update(resa, resb):
 def test_project_instance():
     with patch('src.db_interface.results.insert_one', new=assert_insertion), patch('src.db_interface.results.update_one', new=assert_update), patch('uuid.uuid4', new=dummy_uuid):
         inst = ProjectInstance(DummyContainer())
-        print('Main thread:')
+        print('Running instance in main thread:')
         inst.run()
 
-        print('Separate thread:')
+        print('Running instance in separate thread:')
         inst.start()
-
-        print('main exiting... (not really)')
-        time.sleep(1)
 
         inst2 = ProjectInstance(DummyContainer())
 
         print('Separate thread:')
         inst2.start()
 
-if __name__ == "__main__":
-    test_project_instance()
-    print('main exiting... (for real this time)')
+#if __name__ == "__main__":
+#    test_project_instance()
+#    print('main exiting... (for real this time)')
