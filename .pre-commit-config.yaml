@@ -11,15 +11,7 @@ repos:
 # tests go here
 -   repo: local
     hooks:
-    -   id: tests-main
-        name: Test main.py
-        entry: python test/test_main.py
+    -   id: run-pytest
+        name: Run test/
+        entry: pytest
         language: system
-        types: [python]
--   repo: local
-    hooks:
-    -   id: tests-instance
-        name: Test instance.py
-        entry: python test/test_main.py
-        language: system
-        types: [python]
