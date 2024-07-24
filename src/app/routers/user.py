@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
@@ -39,6 +40,6 @@ def update_user(body: UpdateUsers):
 def delete_user(body: UserDelete):
     db = DBProxy.get_instance().get_db()
     result = user_crud.delete(db, body.id)
-    if result != None:
+    if result is not None:
         raise HTTPException(400, result)
     return {'msg': 'User deleted'}

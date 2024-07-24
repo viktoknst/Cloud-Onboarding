@@ -1,3 +1,7 @@
+'''
+FastAPI App entrypoint. This is the file to be ran with 'fastapi run'
+'''
+
 from fastapi import FastAPI
 
 from app.routers.discovery import discovery_router

@@ -5,7 +5,7 @@ class User:
     password_hash: str
     salt: str
 
-    def __init__(self, id, name, dir, password_hash, salt):
+    def __init__(self, id: str, name: str, dir: str, password_hash: str, salt: str):
         self.id = id
         self.name = name
         self.dir = dir

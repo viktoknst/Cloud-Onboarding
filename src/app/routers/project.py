@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
-from app.special.config import ENDPOINTS
 
-import app.crud.project_crud as project_crud
+from app.special.config import ENDPOINTS
+from app.crud import project_crud
 from app.external_dependencies.db_interface import DBProxy
 from app.models.project import Project
 from app.schemas.project import *
-from app.services.containerizer import project
 import app.services.containerizer.project as project_service
 
 project_router = APIRouter()
@@ -15,7 +14,7 @@ project_router = APIRouter()
 def create_project(p: ProjectCreate):
     db = DBProxy.get_instance().get_db()
     result = project_crud.create(db, p.user_id, p.project_name)
-    if result!= None:
+    if result is not None:
         raise HTTPException(409, result)
     return {'msg': 'Project created'}
 
