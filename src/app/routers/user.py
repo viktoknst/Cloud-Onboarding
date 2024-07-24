@@ -31,9 +31,9 @@ def create_user(u: UserCreate):
 #    return User(result.id, result.name)
 
 
-@user_router.put(ENDPOINTS['user'])
-def update_user(body: UpdateUsers):
-    pass
+#@user_router.put(ENDPOINTS['user'])
+#def update_user(body: UpdateUsers):
+#    pass
 
 
 @user_router.delete(ENDPOINTS['user'])
