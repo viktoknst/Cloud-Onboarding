@@ -4,7 +4,7 @@ MUST - The ability to CRUD user profiles via HTTP.
 
 MUST - The ability to CRUD and execute projects...
 NICE-TO - ...in different languages (provided by the service instance), with said projects being owned by different users.
-
+MUST - At least one language should be supported
 MUST - The ability to get results from specific execution instances.
 
 ## Technical requirements

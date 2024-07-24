@@ -10,7 +10,7 @@ For ease of use, some documents contain Obsidian links to sections in other rele
 
 **For relevant information on how to write new documentation, consult [[Documentation standard and formatting]]**
 
-For the purposes of the documentation, the terms *product* and *project* are used interchangeably, with *product* being used when being referred to in Business and End user - relevant info, and *project* for developer documents.
+For the purposes of the documentation, the terms *product* and *project* are used interchangeably, with *product* being used when being referred to in business and end-user relevant info, and *project* for developer documents.
 ## Sections
 The sections are as listed bellow, along with brief information as to what they contain.
 ##### [[Product documentation Introduction |Business documentation]]
