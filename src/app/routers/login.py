@@ -1,4 +1,7 @@
-# TODO: export login logic to a service script, like auth_utils
+'''
+Login router. For security and authorization.
+'''
+# TODO move auth dependency to auth_utils instead
 from typing_extensions import Annotated
 
 from fastapi import Depends, HTTPException, APIRouter
@@ -17,6 +20,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @login_router.post("/token")
 async def token(r: LoginSchema):
+    '''
+    Endpoint which takes the user's password and username and returns a JWT. Forward for auth_utils
+    '''
     # may or may not be vulnerable to timing attacks...
     db = DBProxy.get_instance().get_db()
     user = user_crud.read(db, user_name = r.user_name)
@@ -32,6 +38,11 @@ async def token(r: LoginSchema):
 
 
 def verify_token(token: str):
+    '''
+    Decrypts a token and checks if its valid
+    Returns:
+        Returns the decrypted token
+    '''
     status, decrypted_token = auth_utils.validate_auth_token(token)
     if status != 'OK':
         raise HTTPException(
@@ -43,15 +54,21 @@ def verify_token(token: str):
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    '''
+    Dependency for token auth. Either takes a token and validates it, returning the user dict, or goes to oauth2
+    '''
     if not token:
         return RedirectResponse(url="/token")
     return verify_token(token)['payload']['sub']
 
 
-def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-    return {"token": token}
+#def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
+#    return {"token": token}
 
 
 @login_router.get("/secure-endpoint")
 async def secure_endpoint(current_user: str = Depends(get_current_user)):
+    '''
+    Example secure endpoint with security dependency.
+    '''
     return {"message": "Welcome to the secure endpoint", "user": current_user}
