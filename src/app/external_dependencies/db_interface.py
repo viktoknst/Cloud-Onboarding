@@ -4,9 +4,7 @@ File which connects to the DB
 
 from pymongo import MongoClient
 
-CONNECTION_STRING = "\
-    mongodb://127.0.0.1:27017/\
-    ?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10"
+CONNECTION_STRING = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.10"
 
 class DBProxy:
     '''
