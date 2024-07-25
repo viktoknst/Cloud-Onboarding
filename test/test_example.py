@@ -1,13 +1,16 @@
-from context import app
+import context
 import pytest
 
-import app.special.test as test
+from app.special import test
 
 
 def test_add_two_nums():
+    '''
+    Used for testing
+    '''
     assert test.add_two_nums(1,2) == 3
     assert test.add_two_nums(6,-8.5) == -2.5
-    with pytest.raises(Exception) as ex: # assert an exception is raised
+    with pytest.raises(Exception): # assert an exception is raised
         assert test.add_two_nums(1,2) == 4
-    with pytest.raises(Exception) as ex:
+    with pytest.raises(Exception):
         test.add_two_nums("Helo", None)

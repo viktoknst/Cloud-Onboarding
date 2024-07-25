@@ -1,9 +1,8 @@
-from context import src
-from context import config
+import context
 
 import pytest
 from unittest.mock import patch
 
-from src.models import project
+from app.models import project
 
-project.Project().create_detached_instance()
+#project.Project().create_detached_instance()

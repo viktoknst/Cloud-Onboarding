@@ -1,5 +1,4 @@
-from context import app
-from context import config
+import context 
 
 import pytest
 from unittest.mock import patch

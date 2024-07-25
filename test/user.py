@@ -20,7 +20,7 @@ def use_token(token: str):
     assert result.status_code == 200
 
     # Test with invalid token
-    result = requests.get(SERVER_URL+"/secure-endpoint", headers={"Authorization": f"Bearer ABC.123"}, timeout=1)
+    result = requests.get(SERVER_URL+"/secure-endpoint", headers={"Authorization": "Bearer ABC.123"}, timeout=1)
     # Expecting 403 - Forbidden
     assert result.status_code == 403
 

@@ -1,4 +1,4 @@
-from context
+import context
 
 from app.crud import project_crud
 
@@ -17,7 +17,6 @@ class TestProjectCrud:
 
 import mongomock
 import pytest
-from myapp.some_module import insert_document, find_document
 
 @pytest.fixture
 def mongo_collection(monkeypatch):
