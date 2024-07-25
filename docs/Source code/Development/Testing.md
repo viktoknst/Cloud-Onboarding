@@ -1,4 +1,3 @@
-### Unit tests
 Done with ```pytest```
 
 Unit tests should be descriptive, and cover:
@@ -7,17 +6,15 @@ Unit tests should be descriptive, and cover:
 * *optionally 1 rare failing scenario*
 
 Things being tested should be on separate rows.
-Comments to be at most **5 words.**
 
-Unit tests to be made in files titled ```test_<file_tested>.py```, with functions
-```test_<func_tested>()```.
+Unit tests to be made in files titled ```test_<file_tested>.py```, with functions/methods ```test_<func_tested>()```, and classes with test methods must start with `Test`. This is imperative as `pytest` test discovery is based on names. 
 
 Unit tests to be added to pre-commit hooks.
 
 Test coverage target - 80%
 
-Code without a test is considered in development and not to be used.
-
+~~Code without a test is considered in development and not to be used.~~
+t
 ### End-to-end tests
 Done with ```requests```
 

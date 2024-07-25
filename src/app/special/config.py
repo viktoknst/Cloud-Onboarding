@@ -1,3 +1,7 @@
+'''
+Holds congiguration option
+'''
+
 ENDPOINTS = {
     'discovery'     : '/',
     'create_user'   : '/new',
@@ -9,3 +13,7 @@ ENDPOINTS = {
 }
 
 USERS_DIRECTORY = '/home/sasho_b/Coding/cob2/users'
+
+def config():
+    return 1
+
