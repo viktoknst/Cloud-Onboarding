@@ -2,7 +2,7 @@ This is the master document for writing and managing documentation for the Cob p
 
 Below is described what common rules the documents should follow.
 ## Sections
-As described in [[Documentation Introduction]], the documentation is to be divided into sections of related, relevant documents. These documents should be created and formatted for use within the Obsidian editor. 
+As described in [[Documentation Introduction]], the documentation is to be divided into sections of related, relevant documents.
 
 Sections may have a document titled '(Section) Introduction' to explain what documents or sections can be found within the section. When referring to section names, use capital letters and **bold**. Ex: 
 	 ...for more info, check out the **Business** section.
@@ -15,10 +15,9 @@ This does not cover obtuse names. Names should require as little prior knowledge
 After that, each document should also include in its first paragraph a brief of what it documents. This information should be redundant with its path - it should give the full context of what the file documents without prior knowledge of the reader unless stated otherwise.
 
 ## Formatting
-This section concerns the formatting of the text within the documents. 
+This section concerns the formatting of the text within the documents. These documents should be created and formatted for use within the Obsidian editor. 
 #### Headings
 Headings are to be of type 2. Sub-headings (i.e sections within other sections) may either use smaller headings (type 4) or another distinguishing marker (such as ALL CAPS, **bold**, or horizontal rules (---)) 
-
 #### Code
 References to code should be written in `code blocks` or else distinguished from the rest of the text
 
