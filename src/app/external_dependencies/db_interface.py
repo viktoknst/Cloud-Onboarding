@@ -8,7 +8,8 @@ CONNECTION_STRING = "mongodb://127.0.0.1:27017/?directConnection=true&serverSele
 
 class DBProxy:
     '''
-    singleton which holds the db; unnescessary as mongoclient is threadsafe but thats not stopping me
+    singleton which holds the db;
+    unnescessary as mongoclient is threadsafe but thats not stopping me
     '''
     __instance = None
 

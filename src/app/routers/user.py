@@ -6,7 +6,7 @@ from app.special.config import ENDPOINTS
 from app.external_dependencies.db_interface import DBProxy
 #from app.models.user import User
 from app.schemas.user import UserCreate, UserDelete
-import app.crud.user_crud as user_crud
+from app.crud import user_crud
 
 
 user_router = APIRouter()

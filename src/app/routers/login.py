@@ -2,7 +2,6 @@
 Login router. For security and authorization.
 '''
 # TODO move auth dependency to auth_utils instead
-from typing_extensions import Annotated
 
 from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
@@ -10,7 +9,7 @@ from fastapi.responses import RedirectResponse
 
 from app.crud import user_crud
 from app.external_dependencies.db_interface import DBProxy
-from app.schemas.login import *
+from app.schemas.login import LoginSchema
 from app.services import auth_utils
 
 login_router = APIRouter()
@@ -19,7 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @login_router.post("/token")
-async def token(r: LoginSchema):
+async def token_endpoint(r: LoginSchema):
     '''
     Endpoint which takes the user's password and username and returns a JWT. Forward for auth_utils
     '''

@@ -13,7 +13,3 @@ ENDPOINTS = {
 }
 
 USERS_DIRECTORY = '/home/sasho_b/Coding/cob2/users'
-
-def config():
-    return 1
-

@@ -23,21 +23,21 @@ def fillout_template(p: Project) -> None:
         save_to.write(template)
 
 
-def create_detached_instance(p: Project):
+def create_detached_instance(p: Project, db):
     fillout_template(p)
 
     image = CLIENT.images.build(path=str(p.source_dir), rm=True)[0] # rm=True OR IT BREAKS!
 
     container = CLIENT.containers.create(image.id)
-    instance = ProjectInstance(container)
+    instance = ProjectInstance(container, db)
     instance.start()
 
     image.remove(force=True)
 
     return instance.id
 
-
-if __name__ == '__main__':
-    project = Project('/home/sasho_b/Coding/debug_cob/main.py', '/home/sasho_b/Coding/debug_cob')
-    id = create_detached_instance(project)
-    print(id)
+# OLD
+#if __name__ == '__main__':
+#    project = Project('/home/sasho_b/Coding/debug_cob/main.py', '/home/sasho_b/Coding/debug_cob')
+#    id = create_detached_instance(project)
+#    print(id)
