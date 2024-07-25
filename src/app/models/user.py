@@ -1,4 +1,10 @@
+'''
+User model
+'''
 class User:
+    '''
+    User model
+    '''
     id: str
     name: str
     dir: str

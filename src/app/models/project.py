@@ -1,4 +1,10 @@
+'''
+Project model
+'''
 class Project:
+    '''
+    Project model
+    '''
     id: str
     name: str
     entry_file: str

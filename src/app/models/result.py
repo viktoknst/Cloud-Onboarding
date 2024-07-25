@@ -1,4 +1,10 @@
+'''
+Result model
+'''
 class Result:
+    '''
+    Result model
+    '''
     id: str
     result: str
 
