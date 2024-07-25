@@ -1,5 +1,6 @@
 '''
 FastAPI App entrypoint. This is the file to be ran with 'fastapi run'
+Endpoints will not be used by server unless added to `app`
 '''
 
 from fastapi import FastAPI

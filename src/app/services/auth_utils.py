@@ -7,10 +7,12 @@ from hashlib import sha256
 
 SECRET = "secret".encode() # CHANGE THIS
 
+
 def gen_salt():
     with open('/dev/urandom', 'br') as fp:
         random = fp.read(32)
         return base64.b64encode(random).decode('utf-8')
+
 
 def hash_password(password: str, user_name: str, salt: str):
     return sha256((password + salt).encode()).hexdigest()
@@ -73,6 +75,7 @@ def unpack_auth_token(token: str):
     result['payload'] = payload
 
     return result
+
 
 # returns tuple (Literal["OK"| error string], token dict)
 def validate_auth_token(token: str):

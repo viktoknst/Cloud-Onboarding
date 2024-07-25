@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException #, Depends
 
 from app.special.config import ENDPOINTS
 from app.crud import project_crud
@@ -18,18 +18,19 @@ def create_project(p: ProjectCreate):
         raise HTTPException(409, result)
     return {'msg': 'Project created'}
 
-
+# TODO
 @project_router.get(ENDPOINTS['project'])
 def read_project(p: ProjectCreate):
     db = DBProxy.get_instance().get_db()
     # project_crud.read(db, )
     pass
 
+# TODO
 @project_router.put(ENDPOINTS['project'])
 def update_project():
     pass
 
-
+# TODO
 @project_router.delete(ENDPOINTS['project'])
 def delete_project():
     pass

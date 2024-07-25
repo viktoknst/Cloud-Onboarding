@@ -1,12 +1,11 @@
 
-from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException #, Depends
 
 from app.special.config import ENDPOINTS
 
 from app.external_dependencies.db_interface import DBProxy
-from app.models.user import User
-from app.schemas.user import *
+#from app.models.user import User
+from app.schemas.user import UserCreate, UserDelete
 import app.crud.user_crud as user_crud
 
 
@@ -16,9 +15,10 @@ user_router = APIRouter()
 @user_router.post(ENDPOINTS['user'])
 def create_user(u: UserCreate):
     db = DBProxy.get_instance().get_db()
-    result = user_crud.create(db, u.user_name, u.password)
-    if result is not None:
-        raise HTTPException(409, result)
+    try:
+        user_crud.create(db, u.user_name, u.password)
+    except Exception as ex:
+        raise HTTPException(409, "Failed to create user") from ex
     return {'msg': 'User created'}
 
 
@@ -39,7 +39,8 @@ def create_user(u: UserCreate):
 @user_router.delete(ENDPOINTS['user'])
 def delete_user(body: UserDelete):
     db = DBProxy.get_instance().get_db()
-    result = user_crud.delete(db, body.id)
-    if result is not None:
-        raise HTTPException(400, result)
+    try:
+        user_crud.delete(db, body.id)
+    except Exception as ex:
+        raise HTTPException(404, detail='Failed to delete user: user does not exist') from ex
     return {'msg': 'User deleted'}
