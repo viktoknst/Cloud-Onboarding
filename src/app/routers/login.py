@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def token(r: LoginSchema):
     # may or may not be vulnerable to timing attacks...
     db = DBProxy.get_instance().get_db()
-    user = user_crud.read(db, name = r.user_name)
+    user = user_crud.read(db, user_name = r.user_name)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
@@ -44,7 +44,7 @@ def verify_token(token: str):
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     if not token:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="/token")
     return verify_token(token)['payload']['sub']
 
 
