@@ -39,14 +39,14 @@ def create(mongo_db: Database, user_name: str, password: str) -> None:
     if re.match(r'^[a-zA-Z0-9 _-]{4,16}$', user_name) is None:
         raise ValueError("Username is invalid")
 
-    if db['users'].find_one({'name': user_name}) is not None:
+    if mongo_db['users'].find_one({'name': user_name}) is not None:
         raise Exception("Username is in use!")
 
     if os.path.exists(USERS_DIRECTORY+'/'+user_name):
         raise Exception("Fatal error!")
         # shutil.rmtree(USERS_DIRECTORY+'/'+user_name)
 
-    db['users'].insert_one(
+    mongo_db['users'].insert_one(
         {
             'id': str(uuid.uuid4()),
             'name': user_name,

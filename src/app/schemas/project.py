@@ -1,5 +1,5 @@
+from fastapi import UploadFile
 from pydantic import BaseModel
-
 
 class ProjectCreate(BaseModel):
     user_id: str
@@ -18,3 +18,8 @@ class ProjectRunRequest(BaseModel):
 
 class ResultQuery(BaseModel):
     id: str
+
+class ProjectUpdate(BaseModel):
+    user_id: str
+    project_id: str
+    file: UploadFile

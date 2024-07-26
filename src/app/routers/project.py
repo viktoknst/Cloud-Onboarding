@@ -3,8 +3,8 @@ from fastapi import APIRouter, HTTPException #, Depends
 from app.special.config import ENDPOINTS
 from app.crud import project_crud
 from app.external_dependencies.db_interface import DBProxy
-from app.models.project import Project
-from app.schemas.project import ProjectRunRequest, ProjectCreate
+#from app.models.project import Project
+from app.schemas.project import ProjectRunRequest, ProjectCreate, ProjectUpdate
 import app.services.containerizer.project as project_service
 
 project_router = APIRouter()
@@ -12,6 +12,9 @@ project_router = APIRouter()
 
 @project_router.post(ENDPOINTS['project'])
 def create_project(p: ProjectCreate):
+    '''
+    s.e.
+    '''
     db = DBProxy.get_instance().get_db()
     result = project_crud.create(db, p.user_id, p.project_name)
     if result is not None:
@@ -25,10 +28,15 @@ def create_project(p: ProjectCreate):
 #    # project_crud.read(db, )
 #    pass
 
-# TODO
-#@project_router.put(ENDPOINTS['project'])
-#def update_project():
-#    pass
+@project_router.put(ENDPOINTS['project'])
+def update_project(r: ProjectUpdate):
+    db = DBProxy.get_instance().get_db()
+    project = project_crud.read(db, r.project_id)
+
+    file_location = f"files/{r.file.filename}"
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+    r
 
 # TODO
 #@project_router.delete(ENDPOINTS['project'])
@@ -38,16 +46,13 @@ def create_project(p: ProjectCreate):
 
 #          NOT CRUD \/ \/ \/
 
-# TODO
-#@project_router.post(ENDPOINTS['project'])
-#def post_run_project(r: ProjectRunRequest):
-#    #if re.match(r'^[a-zA-Z0-9_-]{4,16}$', p.project_name) == None:
-#    #    raise HTTPException(409, "Project name is invalid")
-#    #if os.path.exists(USER_DB['user_dir']+'/'+get_user().user_name+'/'+p.project_name):
-#    #    raise HTTPException(409, "Project name is in use!")
-#    #os.mkdir(USER_DB['user_dir']+"/"+get_user().user_name+'/'+p.project_name)
-#    #return {'msg': 'Project created'}
-#    project = Project(r.project_id)
-#    id = project_service.create_detached_instance(Project)
-#    return id
+@project_router.post(ENDPOINTS['project'])
+def post_run_project(r: ProjectRunRequest):
+    '''
+    Endpoint for running project. 
+    '''
+    db = DBProxy.get_instance().get_db()
+    project = project_crud.read(db, r.project_id)
 
+    result_id = project_service.create_detached_instance(project, db)
+    return result_id
