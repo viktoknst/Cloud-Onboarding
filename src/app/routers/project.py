@@ -30,13 +30,16 @@ def create_project(p: ProjectCreate):
 
 @project_router.put(ENDPOINTS['project'])
 def update_project(r: ProjectUpdate):
+    '''
+    Uploads/updates a file to the project dir.
+    '''
     db = DBProxy.get_instance().get_db()
     project = project_crud.read(db, r.project_id)
 
-    file_location = f"files/{r.file.filename}"
+    file_location = f"{project.source_dir}/{r.file.filename}"
     with open(file_location, "wb+") as file_object:
-        file_object.write(file.file.read())
-    r
+        file_object.write(r.file.file.read())
+    return 'Uploaded file to project'
 
 # TODO
 #@project_router.delete(ENDPOINTS['project'])
