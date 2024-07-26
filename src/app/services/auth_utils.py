@@ -6,6 +6,7 @@ import base64
 from hashlib import sha256
 
 SECRET = "secret".encode() # CHANGE THIS
+DEFAULT_EXPIRY = 15 * 60 # 15 mins
 
 
 def gen_salt():
@@ -36,7 +37,6 @@ def gen_auth_token(
     alg: str = "HS256",
     cty: str = "JWT"
     ):
-    DEFAULT_EXPIRY = 15 * 60 # 15 mins
     if iat is None:
         iat = str(int(time.time())) # warning: dumb code, and time is NOT posix conformant on... i'd guess microwaves
     if exp is None:
