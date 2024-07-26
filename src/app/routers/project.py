@@ -49,7 +49,7 @@ def update_project(r: ProjectUpdate):
 
 #          NOT CRUD \/ \/ \/
 
-@project_router.post(ENDPOINTS['project'])
+@project_router.post('/run')
 def run_project(r: ProjectRunRequest):
     '''
     Endpoint for running project. 

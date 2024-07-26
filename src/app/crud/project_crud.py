@@ -31,7 +31,7 @@ def create(db: Database, user_id: str, project_name):
             'id': str(uuid.uuid4()),
             'name': project_name,
             'entry_file': None,
-            'source_dir': None,
+            'source_dir': user['dir']+'/'+project_name,
             'user_id': user_id
         }
     )
