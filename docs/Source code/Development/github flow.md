@@ -30,5 +30,7 @@ Here, commits should be regular, small, and may not be operable. While preferabl
 
 When reached a stable point - the code can run, mark the commit with the name "Stable: did xyz". A more verbose, multi-line name may be used. The point is to distinguish operable from WIP/unstable commits.
 
+Feature branches should use pull requests to make them visible in github.
+
 **Used terms:**
 work - not necessarily "be fully functional", but rather "start without any hack-jobs and perform the limited set of functions implemented". If the project cant start when you click the big red shiny "start" button, that's not working. When you have to omit a broken file from the build, that's not working either. 
