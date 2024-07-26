@@ -62,5 +62,8 @@ def run_project(r: ProjectRunRequest):
 
 @project_router.get('/result')
 def get_result(r: ResultQuery):
+    '''
+    Returns result object.
+    '''
     db = DBProxy.get_instance().get_db()
     return result_crud.read(db, r.result_id)

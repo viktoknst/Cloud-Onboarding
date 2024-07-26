@@ -1,8 +1,15 @@
 import context
 
-from app.routers import discovery
+from fastapi.testclient import TestClient
+
 from app.special import config
+import main
+
+client = TestClient(main.app)
 
 def test_get_discovery():
-    assert discovery.get_discovery() == config.ENDPOINTS
+    '''
+    Test discovery endpoint
+    '''
+    assert client.get('/').json() == config.ENDPOINTS
 
