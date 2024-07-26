@@ -1,4 +1,4 @@
-import context
+from . import context
 
 from app.routers import discovery
 from app.special import config

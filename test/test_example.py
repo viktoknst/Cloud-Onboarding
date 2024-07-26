@@ -1,4 +1,5 @@
-import context
+from . import context
+
 import pytest
 
 from app.special import test

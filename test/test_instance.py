@@ -1,4 +1,4 @@
-import context 
+from . import context 
 
 import pytest
 from unittest.mock import patch
