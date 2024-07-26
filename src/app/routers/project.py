@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException #, Depends
 
 from app.special.config import ENDPOINTS
-from app.crud import project_crud
+from app.crud import project_crud, result_crud
 from app.external_dependencies.db_interface import DBProxy
 #from app.models.project import Project
-from app.schemas.project import ProjectRunRequest, ProjectCreate, ProjectUpdate
+from app.schemas.project import ProjectRunRequest, ProjectCreate, ProjectUpdate, ResultQuery
 import app.services.containerizer.project as project_service
 
 project_router = APIRouter()
@@ -50,7 +50,7 @@ def update_project(r: ProjectUpdate):
 #          NOT CRUD \/ \/ \/
 
 @project_router.post(ENDPOINTS['project'])
-def post_run_project(r: ProjectRunRequest):
+def run_project(r: ProjectRunRequest):
     '''
     Endpoint for running project. 
     '''
@@ -59,3 +59,8 @@ def post_run_project(r: ProjectRunRequest):
 
     result_id = project_service.create_detached_instance(project, db)
     return result_id
+
+@project_router.get('/result')
+def get_result(r: ResultQuery):
+    db = DBProxy.get_instance().get_db()
+    return result_crud.read(db, r.result_id)

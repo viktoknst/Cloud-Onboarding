@@ -17,7 +17,7 @@ class ProjectRunRequest(BaseModel):
 
 
 class ResultQuery(BaseModel):
-    id: str
+    result_id: str
 
 class ProjectUpdate(BaseModel):
     user_id: str
