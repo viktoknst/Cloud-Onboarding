@@ -14,21 +14,21 @@ from app.models.project import Project
 def create(db: Database, user_id: str, project_name):
     user = db['users'].find_one({'id':user_id})
     if user is None:
-        return "User cant create project; User does not exist"
+        raise Exception("User cant create project; User does not exist")
 
     if re.match(r'^[a-zA-Z0-9_-]{4,16}$', project_name) is None:
-        return "Project name is invalid"
+        raise Exception("Project name is invalid")
 
     if db['projects'].find_one({'user_id': user_id, 'name': project_name}) is not None:
-        return "User has another project of the same name"
+        raise Exception("User has another project of the same name")
 
     if os.path.exists(user['dir']+'/'+project_name):
-        return "Fatal error!"
+        raise Exception("Fatal error!")
         # shutil.rmtree(USERS_DIRECTORY+'/'+user_name)
-
+    project_id = str(uuid.uuid4())
     db['projects'].insert_one(
         {
-            'id': str(uuid.uuid4()),
+            'id': project_id,
             'name': project_name,
             'entry_file': None,
             'source_dir': user['dir']+'/'+project_name,
@@ -37,6 +37,8 @@ def create(db: Database, user_id: str, project_name):
     )
     # replace with mktemp -d, creates a randomly named, non-existant directory
     os.mkdir(user['dir']+'/'+project_name)
+    return project_id
+
 
 def read(db: Database, project_id: str) -> Project:
     project_dict = db['projects'].find_one({'id': project_id})

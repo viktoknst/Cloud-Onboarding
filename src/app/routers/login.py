@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse
 
 from app.crud import user_crud
 from app.external_dependencies.db_interface import DBProxy
+from app.models.user import User
 from app.schemas.login import LoginSchema
 from app.services import auth_utils
 
@@ -52,17 +53,24 @@ def verify_token(token: str):
     return decrypted_token
 
 
+#def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
+#    return {"token": token}
+
+
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     '''
-    Dependency for token auth. Either takes a token and validates it, returning the user dict, or goes to oauth2
+    Dependency for token auth. Either takes a token and validates it, returning the user name, or goes to oauth2
     '''
     if not token:
         return RedirectResponse(url="/token")
-    return verify_token(token)['payload']['sub']
 
 
-#def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-#    return {"token": token}
+async def get_user_dependency(user_name: str = Depends(get_current_user)) -> User:
+    '''
+    Dependency for token auth. Either takes a token and validates it, returning the user dict, or goes to oauth2
+    '''
+    db = DBProxy.get_instance().get_db()
+    return user_crud.read(db, user_name = user_name)
 
 
 @login_router.get("/secure-endpoint")

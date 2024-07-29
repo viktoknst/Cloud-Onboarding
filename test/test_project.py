@@ -1,11 +1,17 @@
+'''
+File for testing project endpoints with pytest
+'''
+
 import context
 from context import client
 from unittest import mock
+
 
 def func(*args):
     '''
     Does nothing. Use for tests.
     '''
+
 
 class TestProject():
     '''
@@ -31,6 +37,7 @@ class TestProject():
     def test_run(self):
         pass
 
-if __name__ == '__main__':
-    a = TestProject()
-    a.test_create()
+# DELETEME
+#if __name__ == '__main__':
+#    a = TestProject()
+#    a.test_create()

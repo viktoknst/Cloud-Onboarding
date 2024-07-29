@@ -15,12 +15,20 @@ def login_process():
 
 def use_token(token: str):
     # Test with valid token
-    result = requests.get(SERVER_URL+"/secure-endpoint", headers={"Authorization": f"Bearer {token}"}, timeout=1)
+    result = requests.get(
+        SERVER_URL+"/secure-endpoint",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=1
+    )
     # Expecting 200 - OK
     assert result.status_code == 200
 
     # Test with invalid token
-    result = requests.get(SERVER_URL+"/secure-endpoint", headers={"Authorization": "Bearer ABC.123"}, timeout=1)
+    result = requests.get(
+        SERVER_URL+"/secure-endpoint",
+        headers={"Authorization": "Bearer ABC.123"},
+        timeout=1
+    )
     # Expecting 403 - Forbidden
     assert result.status_code == 403
 
@@ -34,6 +42,36 @@ def use_token(token: str):
     # Expecting 200 - OK
     #assert(result.status_code == 200)
 
-if __name__ == "__main__":
-    token = login_process()
-    use_token(token)
+def run_project():
+    # Create user
+    requests.post(
+        SERVER_URL+"/user",
+        json={'user_name': 'John Doe', 'password': '1234'},
+        timeout=1
+    )
+    # Get user token
+    token = requests.post(SERVER_URL+'/token', json={'user_name':'John Doe','password':'1234'}, timeout=1)
+    token = token.json()['access_token']
+
+    # Create project
+    responce = requests.post(
+        SERVER_URL+"/project",
+        json={'project_name': 'myproject'},
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=1
+    )
+    project_id = responce['']
+    responce = requests.post(
+        SERVER_URL+"/run",
+        json={'project_id'},
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=1
+    )
+    /result
+    ResultQuery(BaseModel):
+    result_id: str
+
+
+#if __name__ == "__main__":
+#    token = login_process()
+#    use_token(token)

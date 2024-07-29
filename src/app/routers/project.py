@@ -1,31 +1,29 @@
-from fastapi import APIRouter, HTTPException #, Depends
+from fastapi import APIRouter, HTTPException, Depends
 
 from app.special.config import ENDPOINTS
 from app.crud import project_crud, result_crud
 from app.external_dependencies.db_interface import DBProxy
 #from app.models.project import Project
-from app.schemas.project import ProjectRunRequest, ProjectCreate, ProjectUpdate, ResultQuery
+from app.models.user import User
+from app.schemas.project import ProjectRunRequest, ProjectCreate, ProjectUpdate, ResultQuery, ProjectRead
 import app.services.containerizer.project as project_service
-
+from app.routers.login import get_user_dependency
 project_router = APIRouter()
 
 
 @project_router.post(ENDPOINTS['project'])
-def create_project(p: ProjectCreate):
+def create_project(p: ProjectCreate, user: User = Depends(get_user_dependency)):
     '''
     s.e.
     '''
     db = DBProxy.get_instance().get_db()
-    result = project_crud.create(db, p.user_id, p.project_name)
-    if result is not None:
-        raise HTTPException(409, result)
-    return {'msg': 'Project created'}
+    result = project_crud.create(db, user.id, p.project_name)
+    return {'msg': 'Project created', 'project_id': result}
 
-# TODO
 #@project_router.get(ENDPOINTS['project'])
-#def read_project(p: ProjectCreate):
+#def read_project(p: ProjectRead):
 #    db = DBProxy.get_instance().get_db()
-#    # project_crud.read(db, )
+#    project_crud.read(db, )
 #    pass
 
 @project_router.put(ENDPOINTS['project'])
