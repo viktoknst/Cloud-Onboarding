@@ -5,7 +5,6 @@ Login router. For security and authorization.
 
 from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
-from fastapi.responses import RedirectResponse
 
 from app.crud import user_crud
 from app.external_dependencies.db_interface import DBProxy
@@ -61,9 +60,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     '''
     Dependency for token auth. Either takes a token and validates it, returning the user name, or goes to oauth2
     '''
-    if not token:
-        return RedirectResponse(url="/token")
-
+    status, token = auth_utils.validate_auth_token(token)
+    if status != 'OK':
+        raise HTTPException(403)
+    return token['payload']['sub']
 
 async def get_user_dependency(user_name: str = Depends(get_current_user)) -> User:
     '''

@@ -40,8 +40,14 @@ def create(db: Database, user_id: str, project_name):
     return project_id
 
 
-def read(db: Database, project_id: str) -> Project:
-    project_dict = db['projects'].find_one({'id': project_id})
+def read(db: Database, project_id: str | None = None, project_name: str | None = None) -> Project:
+    project_dict = None
+    if project_id is not None:
+        project_dict = db['projects'].find_one({'id': project_id})
+    elif project_name is not None:
+        project_dict = db['projects'].find_one({'name': project_name})
+    else:
+        raise Exception('No arguments provided')
     return Project(
         project_dict['id'],
         project_dict['name'],
@@ -62,9 +68,12 @@ def update(db: Database, p: Project):
     )
 
 
-def delete(db: Database, id: str):
-    return db['projects'].delete_one(
-        {
-            'id': id,
-        }
-    )
+def delete(db: Database, project_id: str | None = None, project_name: str | None = None):
+    project_dict = None
+    if project_id is not None:
+        project_dict = db['projects'].find_one_and_delete({'id': project_id})
+    elif project_name is not None:
+        project_dict = db['projects'].find_one_and_delete({'name': project_name})
+    else:
+        raise Exception('No arguments provided')
+    os.rmdir(project_dict['source_dir'])

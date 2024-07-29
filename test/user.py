@@ -53,25 +53,42 @@ def run_project():
     token = requests.post(SERVER_URL+'/token', json={'user_name':'John Doe','password':'1234'}, timeout=1)
     token = token.json()['access_token']
 
+    # Read project
+    responce = requests.get(
+        SERVER_URL+"/project/myproject",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=1
+    )
+    
+    # Delete project
+    responce = requests.delete(
+        SERVER_URL+"/project/myproject",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=1
+    )
     # Create project
     responce = requests.post(
-        SERVER_URL+"/project",
-        json={'project_name': 'myproject'},
+        SERVER_URL+"/project/myproject",
         headers={"Authorization": f"Bearer {token}"},
         timeout=1
     )
-    project_id = responce['']
+    project_id = responce.json()['project_id']
+    
+    # Run project
     responce = requests.post(
-        SERVER_URL+"/run",
-        json={'project_id'},
+        SERVER_URL+"/run/"+project_id,
         headers={"Authorization": f"Bearer {token}"},
         timeout=1
     )
-    /result
-    ResultQuery(BaseModel):
-    result_id: str
+    result_id = responce.text
+    responce = requests.post(
+        SERVER_URL+"/result",
+        json={'result_id': result_id},
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=1
+    )
 
-
-#if __name__ == "__main__":
-#    token = login_process()
-#    use_token(token)
+if __name__ == "__main__":
+    token = login_process()
+    use_token(token)
+    run_project()
