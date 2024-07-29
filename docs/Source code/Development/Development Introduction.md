@@ -7,3 +7,5 @@ The Development section.
 [[Code guidelines]] - File with guidelines for writing good, readable code.
 
 [[Testing]] - File with guidelines for how testing should be done.
+
+[[Installation]] - File describing how to install the app, its dependencies, tools, and relevant information, for development purposes. 
