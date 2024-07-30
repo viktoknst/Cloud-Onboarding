@@ -1,3 +1,7 @@
+'''
+File to ensure that tests are working.
+'''
+
 import context
 import pytest
 

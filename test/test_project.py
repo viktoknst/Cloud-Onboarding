@@ -5,7 +5,7 @@ File for testing project endpoints with pytest
 import context
 from context import client
 from unittest import mock
-
+import pytest
 
 def func(*args):
     '''
@@ -31,9 +31,11 @@ class TestProject():
         responce = client.post('/project', json={'user_id':'abc', 'project_name':'project'})
         assert responce.status_code == 200 # Now works
 
+    @pytest.mark.skip(reason="Functionality not implemented")
     def test_update(self):
         pass
 
+    @pytest.mark.skip(reason="Functionality not implemented")
     def test_run(self):
         pass
 

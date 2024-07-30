@@ -15,7 +15,7 @@ def gen_salt():
         return base64.b64encode(random).decode('utf-8')
 
 
-def hash_password(password: str, user_name: str, salt: str):
+def hash_password(password: str, salt: str):
     return sha256((password + salt).encode()).hexdigest()
 
 

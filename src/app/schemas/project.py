@@ -18,7 +18,5 @@ class ResultQuery(BaseModel):
     result_id: str
 
 class ProjectUpdate(BaseModel):
-    user_id: str
-    project_id: str
     file: UploadFile
     is_entry: bool | None

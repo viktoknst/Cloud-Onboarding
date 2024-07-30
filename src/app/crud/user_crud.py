@@ -6,12 +6,160 @@ import uuid
 import os
 import re
 import shutil
+import json
 
 from pymongo.database import Database
 
-from app.models.user import User
 from app.special.config import USERS_DIRECTORY
 from app.services import auth_utils
+
+class User:
+    '''
+    User model
+    '''
+    db: Database
+
+    @classmethod
+    def set_db(cls, db: Database):
+        cls.db = db
+
+
+    def __init__(self, id: str, name: str, dir: str, password_hash: str, salt: str):
+        self.id = id
+        self.name = name
+        self.dir = dir
+        self.password_hash = password_hash
+        self.salt = salt
+
+
+    @classmethod
+    def create(cls, name: str, password: str):
+        """Creates user into the given DB. Throws exceptions.
+
+        Args:
+            mongo_db (Database): _description_
+            user_name (str): _description_
+            password (str): _description_
+
+        Returns:
+            None
+        """
+
+        if re.match(r'^[a-zA-Z0-9 _-]{4,16}$', name) is None:
+            raise ValueError("Username is invalid")
+
+        if cls.db['users'].find_one({'name': name}) is not None:
+            raise Exception("Username is in use!")
+
+        dir = USERS_DIRECTORY+'/'+name
+
+        if os.path.exists(dir):
+            raise Exception("Fatal error!")
+            # shutil.rmtree(USERS_DIRECTORY+'/'+user_name)
+
+        id = str(uuid.uuid4())
+
+        salt = auth_utils.gen_salt()
+        password_hash = auth_utils.hash_password(password, salt)
+
+        user = User(id, name, dir, password_hash, salt)
+
+        os.mkdir(dir)
+
+        cls.db['users'].insert_one(
+            user.to_jsons()
+        )
+
+        return user
+
+
+    @classmethod
+    def read(cls, id: str | None = None, name: str | None = None):
+        """Reads user from the given DB. Throws exceptions.
+        Can search either by name or id. If neither are provided, user cant be found.
+
+        Args:
+            mongo_db (Database): _description_
+            user_id (str | None, optional): _description_. Defaults to None.
+            user_name (str | None, optional): _description_. Defaults to None.
+
+        Returns:
+            User: _description_
+        """
+        user_dict = None
+        if id is not None:
+            user_dict = cls.db['users'].find_one({'id':id})
+        if name is not None:
+            user_dict = cls.db['users'].find_one({'name':name})
+        if user_dict is None:
+            raise Exception("User not found!")
+
+        return User(
+            user_dict['id'],
+            user_dict['name'],
+            user_dict['dir'],
+            user_dict['password_hash'],
+            user_dict['salt'],
+        )
+
+
+    def update(self) -> None:
+        """Updates user in the given DB.
+        Only fileds not equal to '' will be updated.
+        'user' MUST have id.
+
+        Args:
+            mongo_db (Database): _description_
+            user (User): _description_
+
+        Returns:
+            User: The User that resulted from the change.
+        """
+        self.db['users'].update_one(
+            {
+                # id is explicitly ignored; it makes 0 sense to change it
+                'name': self.name,
+                'dir': self.dir,
+                'password_hash': self.password_hash,
+                'salt': self.salt,
+            }
+        )
+
+
+    def delete(self) -> None:
+        """Deletes user from DB.
+
+        Args:
+            user_db (Database): _description_
+            user_id (str): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        
+        if not os.path.exists(self.dir):
+            raise Exception("Faulty deletion; Aborting")
+        shutil.rmtree(self.dir)
+        self.db['users'].delete_one({'id':self.id})
+
+
+    def to_jsons(self) -> str:
+        return json.dumps(
+            {
+                'id': self.id,
+                'name': self.name,
+                'dir': self.dir,
+                'password_hash': self.password_hash,
+                'salt': self.salt,
+            }
+        )
+
+
+    def change_password(self, new_password: str) -> None:
+        salt = auth_utils.gen_salt()
+        password_hash = auth_utils.hash_password(new_password, salt)
+        self.salt = salt
+        self.password_hash = password_hash
 
 # import asyncio.locks TODO: we have 0 protection against concurent user creation:
 # A creates user John
@@ -21,134 +169,3 @@ from app.services import auth_utils
 # A inserts one John into DB
 # B inserts another Jogn into DB
 # XO
-
-def create(mongo_db: Database, user_name: str, password: str) -> None:
-    """Creates user into the given DB. Throws exceptions.
-
-    Args:
-        mongo_db (Database): _description_
-        user_name (str): _description_
-        password (str): _description_
-
-    Returns:
-        None
-    """
-    salt = auth_utils.gen_salt()
-    password_hash = auth_utils.hash_password(password, user_name, salt)
-
-    if re.match(r'^[a-zA-Z0-9 _-]{4,16}$', user_name) is None:
-        raise ValueError("Username is invalid")
-
-    if mongo_db['users'].find_one({'name': user_name}) is not None:
-        raise Exception("Username is in use!")
-
-    if os.path.exists(USERS_DIRECTORY+'/'+user_name):
-        raise Exception("Fatal error!")
-        # shutil.rmtree(USERS_DIRECTORY+'/'+user_name)
-
-    mongo_db['users'].insert_one(
-        {
-            'id': str(uuid.uuid4()),
-            'name': user_name,
-            'dir': USERS_DIRECTORY+'/'+user_name,
-            'password_hash': password_hash,
-            'salt': salt,
-        }
-    )
-    os.mkdir(USERS_DIRECTORY+'/'+user_name)
-
-
-def read(mongo_db: Database, user_id: str | None = None, user_name: str | None = None) -> User:
-    """Reads user from the given DB. Throws exceptions.
-    Can search either by name or id. If neither are provided, user cant be found.
-
-    Args:
-        mongo_db (Database): _description_
-        user_id (str | None, optional): _description_. Defaults to None.
-        user_name (str | None, optional): _description_. Defaults to None.
-
-    Returns:
-        User: _description_
-    """
-    user_dict = None
-    if user_id is not None:
-        user_dict = mongo_db['users'].find_one({'id':user_id})
-    if user_name is not None:
-        user_dict = mongo_db['users'].find_one({'name':user_name})
-
-    if user_dict is None:
-        raise Exception("User not found!")
-
-    return User(
-        user_dict['id'],
-        user_dict['name'],
-        user_dict['dir'],
-        user_dict['password_hash'],
-        user_dict['salt'],
-    )
-
-#def read(db: Database, id: str) -> User | str:
-#    result = db['users'].find_one({'id':id})
-#
-#    if result == None:
-#        return "User not found error!"
-#
-#    return User(
-#        result['id'],
-#        result['name'],
-#        result['password'],
-#        result['dir']
-#    )
-
-
-def update(mongo_db: Database, user: User) -> User:
-    """Updates user in the given DB.
-    Only fileds not equal to '' will be updated.
-    'user' MUST have id.
-
-    Args:
-        mongo_db (Database): _description_
-        user (User): _description_
-
-    Returns:
-        User: The User that resulted from the change.
-    """
-    old_user = read(mongo_db=mongo_db, user_id=user.id)
-    if user.name == '':
-        user.name = old_user.name
-    if user.dir == '':
-        user.dir = old_user.dir
-    if user.password_hash == '':
-        user.password_hash = old_user.password_hash
-    if user.salt == '':
-        user.salt = old_user.salt
-    mongo_db['users'].update_one(
-        {
-            # id is explicitly ignored; it makes 0 sense to change it
-            'name': user.name,
-            'dir': user.dir,
-            'password_hash': user.password_hash,
-            'salt': user.salt,
-        }
-    )
-
-
-def delete(user_db: Database, user_id: str):
-    """Deletes user from DB.
-
-    Args:
-        user_db (Database): _description_
-        user_id (str): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    user_dict = user_db['users'].find_one({'id': user_id})
-    if user_dict is None:
-        raise Exception("User not found")
-
-    if not os.path.exists(user_dict['dir']):
-        raise Exception("Faulty deletion; Aborting")
-
-    user_db['users'].delete_one({'id':user_id})
-    shutil.rmtree(user_dict['dir'])
