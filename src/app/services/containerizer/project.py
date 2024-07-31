@@ -2,7 +2,7 @@ from pathlib import Path
 
 import docker
 
-from app.models.project import Project
+from app.crud.project_crud import Project
 from app.services.containerizer.instance import ProjectInstance
 
 
