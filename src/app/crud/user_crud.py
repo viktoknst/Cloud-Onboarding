@@ -136,7 +136,7 @@ class User:
         Returns:
             _type_: _description_
         """
-        
+
         if not os.path.exists(self.dir):
             raise Exception("Faulty deletion; Aborting")
         shutil.rmtree(self.dir)

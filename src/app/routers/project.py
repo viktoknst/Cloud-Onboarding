@@ -20,8 +20,8 @@ Project.set_db(DBProxy.get_instance().get_db())
 def get_project(user: User, project_name: str) -> Project:
     try:
         return Project.create(user, project_name)
-    except:
-        raise HTTPException(404, detail='Project not found')
+    except Exception as ex:
+        raise HTTPException(404, detail='Project not found') from ex
 
 
 @project_router.post(ENDPOINTS['project']+'/{project_name}')
@@ -59,16 +59,20 @@ def delete_project(project_name: str, user: User = Depends(get_user_dependency))
 
 
 @project_router.put(ENDPOINTS['project']+'/{project_name}/upload')
-def upload_code(project_name: str, file_request: ProjectUpdate, user: User = Depends(get_user_dependency)):
+def upload_code(
+        project_name: str,
+        file_request: ProjectUpdate,
+        user: User = Depends(get_user_dependency)
+    ):
     '''
     Upload code to project
     '''
     project = get_project(user, project_name)
-    
+
     file_location = f"{project.source_dir}/{file_request.file.filename}"
     with open(file_location, "wb+") as file_object:
         file_object.write(file_request.file.file.read())
-    if file_request.is_entry == True:
+    if file_request.is_entry is True:
         project.entry_file = file_request.file.filename
         project.update()
     return 'Uploaded file to project'
@@ -85,10 +89,10 @@ def run_project(project_id: str, user: User = Depends(get_user_dependency)):
     result_id = project_service.create_detached_instance(project, db)
     return result_id
 
+
 @project_router.get('/result/{result_id}')
 def get_result(result_id: str):
     '''
     Returns result object.
     '''
-    db = DBProxy.get_instance().get_db()
     return Result.read(id=result_id).to_jsons()

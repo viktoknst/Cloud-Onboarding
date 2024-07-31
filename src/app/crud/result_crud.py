@@ -44,12 +44,12 @@ class Result:
             id (str): _description_
         """
         id = str(uuid.uuid4())
-        
+
         if result is None:
             status = 'running'
         else:
             status = 'done'
-        
+
         cls.db['results'].insert_one(
             {
                 'id': id,
@@ -57,7 +57,7 @@ class Result:
                 'result': result
             }
         )
-        
+
         return Result(id, result)
 
 
@@ -88,7 +88,7 @@ class Result:
             status = 'running'
         else:
             status = 'done'
-        
+
         self.db['results'].update_one(
             {
                 'id': self.id

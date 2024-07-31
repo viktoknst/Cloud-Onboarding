@@ -54,13 +54,13 @@ class Project:
             }
         ) is not None:
             raise Exception("User has another project of the same name")
-        
+
         source_dir = user.dir+'/'+name
-        
+
         if os.path.exists(source_dir):
             # shutil.rmtree(USERS_DIRECTORY+'/'+user_name)
             raise Exception("Fatal error!")
-        
+
         id = str(uuid.uuid4())
 
         cls.db['projects'].insert_one(
@@ -144,7 +144,7 @@ class Project:
 #if __name__ == '__main__':
 #    a_user = User('abc123','/home/sasho_b/Coding/cob2/users')
 #    Project.set_db(mongomock.MongoClient().get_database('mydb'))
-#    
+#
 #    os.rmdir('/home/sasho_b/Coding/cob2/users/myproject')
 #    myproject = Project.create(a_user, 'myproject')
 #    myproject.name = 'new_name'
@@ -154,4 +154,4 @@ class Project:
 #    assert myproject.name == project_by_id.name
 #    project_by_name = Project.read(a_user, name='new_name')
 #    assert myproject.id == project_by_name.id
-#    
+#
