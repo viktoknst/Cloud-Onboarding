@@ -19,7 +19,7 @@ Project.set_db(DBProxy.get_instance().get_db())
 
 def get_project(user: User, project_name: str) -> Project:
     try:
-        return Project.create(user, project_name)
+        return Project.read(user, name=project_name)
     except Exception as ex:
         raise HTTPException(404, detail='Project not found') from ex
 

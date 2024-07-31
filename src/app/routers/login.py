@@ -1,7 +1,6 @@
 '''
 Login router. For security and authorization.
 '''
-# TODO move auth dependency to auth_utils instead
 
 from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
@@ -15,7 +14,6 @@ login_router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-User.set_db(DBProxy.get_instance().get_db())
 
 @login_router.post("/token")
 async def token_endpoint(r: LoginSchema):
@@ -33,7 +31,7 @@ async def token_endpoint(r: LoginSchema):
     if hashed_password != user.password_hash:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    token = auth_utils.gen_auth_token(user.name)
+    token = auth_utils.gen_auth_token(user.id)
     return {"access_token": token, "token_type": "bearer"}
 
 
@@ -54,10 +52,6 @@ def verify_token(token: str):
     return decrypted_token
 
 
-#def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-#    return {"token": token}
-
-
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     '''
     Dependency for token auth.
@@ -69,12 +63,16 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return token['payload']['sub']
 
 
-async def get_user_dependency(user_name: str = Depends(get_current_user)) -> User:
+async def get_user_dependency(user_id: str = Depends(get_current_user)) -> User:
     '''
     Dependency for token auth.
     Either takes a token and validates it, returning the user dict, or goes to oauth2
     '''
-    return User.read(name = user_name)
+    try:
+        user = User.read(id=user_id)
+    except Exception as ex:
+        raise HTTPException(404, detail='User not found') from ex
+    return user
 
 
 @login_router.get("/secure-endpoint")

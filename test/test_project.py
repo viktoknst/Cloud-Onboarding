@@ -18,25 +18,27 @@ class TestProject():
     Tests project-related endpoints
     '''
     @mock.patch('os.mkdir', new=func)
-    @mock.patch('app.external_dependencies.db_interface.DBProxy.get_instance', new=context.MockDBProxy.get_instance)
+    @mock.patch('os.path.exists', new=func)
     def test_create_fail(self):
-        responce = client.post('/project', json={'user_id':'abc', 'project_name':'project'})
-        assert responce.status_code == 409 # User abd doesnt exist
+        responce = client.post('/project/project', json={'user_id':'abc', 'project_name':'project'})
+        assert responce.status_code == 409 # User abc doesnt exist
 
-    @mock.patch('os.mkdir', new=func)
-    @mock.patch('app.external_dependencies.db_interface.DBProxy.get_instance', new=context.MockDBProxy.get_instance)
+
     def test_create_work(self, get_mock_db):
         # create user abc
         get_mock_db['users'].insert_one({'id':'abc', 'dir':''})
         responce = client.post('/project', json={'user_id':'abc', 'project_name':'project'})
         assert responce.status_code == 200 # Now works
 
+
     @pytest.mark.skip(reason="Functionality not implemented")
     def test_update(self):
         pass
 
+
+    @pytest.mark.skip(reason="Functionality not implemented")
     def test_upload(self):
-        
+        pass
 
     @pytest.mark.skip(reason="Functionality not implemented")
     def test_run(self):

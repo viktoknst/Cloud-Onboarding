@@ -1,14 +1,13 @@
-import context
-from context import client
+from context import *
 
+@mock.patch('os.mkdir', new=does_nothing)
+@mock.patch('os.path.exists', new=always_false)
 class TestExampleUser:
-    
+
     def test_login_process(self):
-        try:
-            result = client.post('/user', json={'user_name':'John Doe','password':'1234'}, timeout=1)
-            print(result.text)
-        except Exception:
-            pass # do nothing, user exists
+    
+        result = client.post('/user', json={'user_name':'John Doe','password':'1234'}, timeout=1)
+        print(result.text)
         result = client.post('/token', json={'user_name':'John Doe','password':'1234'}, timeout=1)
         print(result.text)
         token = result.json()['access_token']
@@ -51,9 +50,8 @@ class TestExampleUser:
             timeout=1
         )
         # Get user token
-        token = client.post('/token', json={'user_name':'John Doe','password':'1234'}, timeout=1)
-        token = token.json()['access_token']
-
+        token = client.post('/token', json={'user_name':'John Doe','password':'1234'}, timeout=1).json()['access_token']
+    
         # Read project
         try:
             responce = client.get(
@@ -94,6 +92,7 @@ class TestExampleUser:
         )
 
 if __name__ == "__main__":
-    token = login_process()
-    use_token(token)
-    run_project()
+    john = TestExampleUser()
+    token = john.test_login_process()
+    john.use_token(token)
+    john.run_project()
