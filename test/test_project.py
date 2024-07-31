@@ -2,49 +2,61 @@
 File for testing project endpoints with pytest
 '''
 
-import context
-from context import client
+from context import *
 from unittest import mock
 import pytest
 
-def func(*args):
-    '''
-    Does nothing. Use for tests.
-    '''
 
-
+@mock.patch('os.mkdir', new=does_nothing)
 class TestProject():
     '''
     Tests project-related endpoints
     '''
-    @mock.patch('os.mkdir', new=func)
-    @mock.patch('os.path.exists', new=func)
-    def test_create_fail(self):
-        responce = client.post('/project/project', json={'user_id':'abc', 'project_name':'project'})
+    @mock.patch('os.path.exists', new=always_true)
+    def test_create_fail_project_exists(self, get_test_user):
+        responce = client.post(
+            '/project/myproject',
+            headers=get_test_user
+        )
         assert responce.status_code == 409 # User abc doesnt exist
 
 
-    def test_create_work(self, get_mock_db):
-        # create user abc
-        get_mock_db['users'].insert_one({'id':'abc', 'dir':''})
-        responce = client.post('/project', json={'user_id':'abc', 'project_name':'project'})
+    @mock.patch('os.path.exists', new=always_false)
+    def test_create_succeed(self, get_test_user):
+        responce = client.post(
+            '/project/myproject',
+            headers=get_test_user
+        )
         assert responce.status_code == 200 # Now works
 
 
-    @pytest.mark.skip(reason="Functionality not implemented")
-    def test_update(self):
-        pass
+    @pytest.mark.skip(reason="Not in use")
+    @mock.patch('os.path.exists', new=always_true)
+    def test_update(self, get_test_user):
+        responce = client.post(
+            '/project/myproject',
+            headers=get_test_user
+        )
+        assert responce.status_code == 200
 
 
-    @pytest.mark.skip(reason="Functionality not implemented")
-    def test_upload(self):
-        pass
+    @mock.patch('os.path.exists', new=always_false)
+    def test_upload(self, get_test_user):
+        response = client.post(
+            '/project/myproject',
+            headers=get_test_user
+        )
+        assert response.status_code == 200
+        with open('test/hello_world.py', 'rb+') as file:
+            response = client.put(
+                "/project/myproject/upload",
+                files={"file": ('hello_world.py', file, "text/plain")},
+                headers=get_test_user
+            )
+        print(response)
+        assert response.status_code == 200
 
+    #TODO
     @pytest.mark.skip(reason="Functionality not implemented")
     def test_run(self):
         pass
-
-# DELETEME
-#if __name__ == '__main__':
-#    a = TestProject()
-#    a.test_create()

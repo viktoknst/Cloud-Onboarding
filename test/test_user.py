@@ -91,18 +91,3 @@ class TestUser():
             headers=get_test_user
         )
         assert responce.status_code == 200
-
-
-    @pytest.mark.skip(reason="Functionality not implemented")
-    def test_upload(self):
-        pass
-
-
-    @pytest.mark.skip(reason="Functionality not implemented")
-    def test_run(self):
-        pass
-
-# DELETEME
-#if __name__ == '__main__':
-#    a = TestProject()
-#    a.test_create()

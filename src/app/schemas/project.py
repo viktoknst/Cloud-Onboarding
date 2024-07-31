@@ -19,5 +19,4 @@ from pydantic import BaseModel
 #
 #
 class ProjectUpdate(BaseModel):
-    file: UploadFile
     is_entry: bool | None

@@ -1,20 +1,15 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile
 
 from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
-from app.external_dependencies.db_interface import DBProxy
 #from app.models.project import Project
-from app.schemas.project import ProjectUpdate
+#from app.schemas.project import ProjectUpdate
 import app.services.containerizer.project as project_service
 from app.routers.login import get_user_dependency
 
 project_router = APIRouter()
-
-User.set_db(DBProxy.get_instance().get_db())
-Result.set_db(DBProxy.get_instance().get_db())
-Project.set_db(DBProxy.get_instance().get_db())
 
 
 def get_project(user: User, project_name: str) -> Project:
@@ -29,7 +24,10 @@ def create_project(project_name: str, user: User = Depends(get_user_dependency))
     '''
     s.e.
     '''
-    project = get_project(user, project_name)
+    try:
+        project = Project.create(user, project_name)
+    except Exception:
+        raise HTTPException(409, 'Failed to create project')
     return {'msg': 'Project created', 'project': project.to_jsons()}
 
 
@@ -61,7 +59,8 @@ def delete_project(project_name: str, user: User = Depends(get_user_dependency))
 @project_router.put(ENDPOINTS['project']+'/{project_name}/upload')
 def upload_code(
         project_name: str,
-        file_request: ProjectUpdate,
+        file: UploadFile,
+        is_entry: bool | None = None,
         user: User = Depends(get_user_dependency)
     ):
     '''
@@ -69,11 +68,11 @@ def upload_code(
     '''
     project = get_project(user, project_name)
 
-    file_location = f"{project.source_dir}/{file_request.file.filename}"
+    file_location = f"{project.source_dir}/{file.filename}"
     with open(file_location, "wb+") as file_object:
-        file_object.write(file_request.file.file.read())
-    if file_request.is_entry is True:
-        project.entry_file = file_request.file.filename
+        file_object.write(file.file.read())
+    if is_entry is True:
+        project.entry_file = file.filename
         project.update()
     return 'Uploaded file to project'
 
