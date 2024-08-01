@@ -6,7 +6,6 @@ from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
 
 from app.crud.user_crud import User
-from app.external_dependencies.db_interface import DBProxy
 from app.schemas.login import LoginSchema
 from app.services import auth_utils
 
@@ -51,9 +50,10 @@ def verify_token(token: str):
 
     return decrypted_token
 
-
+# TODO remove
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     '''
+    DEPRECATED
     Dependency for token auth.
     Either takes a token and validates it, returning the user name, or goes to oauth2
     '''
@@ -75,9 +75,11 @@ async def get_user_dependency(user_id: str = Depends(get_current_user)) -> User:
     return user
 
 
+# TODO remove
 @login_router.get("/secure-endpoint")
 async def secure_endpoint(current_user: str = Depends(get_current_user)):
     '''
+    DEPRECATED
     Example secure endpoint with security dependency.
     '''
     return {"message": "Welcome to the secure endpoint", "user": current_user}

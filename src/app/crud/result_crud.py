@@ -4,7 +4,7 @@ Module that handles CRUD operations for results in the DB
 import uuid
 
 from pymongo.database import Database
-
+# TODO DELETEME 'Malko kato bager na detskata ploshtadka' -Miro
 class Result:
     '''
     Result model
@@ -22,8 +22,8 @@ class Result:
         self.result = result
 
 
-    @staticmethod
-    def from_dict(json_dict: dict):
+    @classmethod
+    def from_dict(cls, json_dict: dict):
         '''
         Initialize from dict
         '''
@@ -79,8 +79,8 @@ class Result:
             }
         )
         if result is None:
-            raise Exception('Result does not exist')
-        return result
+            raise ValueError('Result id does not exist')
+        return cls.from_dict(result)
 
 
     def update(self) -> None:
@@ -108,3 +108,10 @@ class Result:
                 'id': self.id
             }
         )
+
+
+    def to_dict(self):
+        return{
+            'id': self.id,
+            'result': self.result
+        }

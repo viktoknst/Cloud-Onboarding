@@ -23,13 +23,13 @@ def fillout_template(p: Project) -> None:
         save_to.write(template)
 
 
-def create_detached_instance(p: Project, db):
+def create_detached_instance(p: Project):
     fillout_template(p)
 
     image = CLIENT.images.build(path=str(p.source_dir), rm=True)[0] # rm=True OR IT BREAKS!
 
     container = CLIENT.containers.create(image.id)
-    instance = ProjectInstance(container, db)
+    instance = ProjectInstance(container)
     instance.start()
 
     image.remove(force=True)

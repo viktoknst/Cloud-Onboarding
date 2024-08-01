@@ -6,7 +6,7 @@ import re
 import os
 import uuid
 import json
-
+from typing import BinaryIO
 from pymongo.database import Database
 
 from app.crud.user_crud import User
@@ -38,9 +38,6 @@ class Project:
         self.source_dir = source_dir
         self.user_id = user_id
 
-#    def set_name(self, new_name: str):
-#        if re.match(r'^[a-zA-Z0-9_-]{4,16}$', new_name) is None:
-#            raise Exception("Project name is invalid")
 
     @classmethod
     def create(cls, user: User, name: str):
@@ -84,9 +81,9 @@ class Project:
         elif name is not None:
             project_dict = cls.db['projects'].find_one({'name': name, 'user_id': user.id})
         else:
-            raise Exception('No arguments provided')
+            raise ValueError('No arguments provided')
         if project_dict is None:
-            raise Exception('User not found')
+            raise ValueError('Project not found')
         return Project(
             project_dict['id'],
             project_dict['name'],
@@ -108,7 +105,7 @@ class Project:
                 #'id':, explicitly ommitted
                 'name': self.name,
                 'entry_file': self.entry_file,
-                'source_dir': self.entry_file,
+                'source_dir': self.source_dir,
                 #'user_id': user_id explicitly ommitted
             }}
         )
@@ -119,22 +116,32 @@ class Project:
         os.rmdir(self.source_dir)
 
 
-    # TODO
-    def add_file(self, file):
-        pass
+    def add_file(self, file: BinaryIO, filename: str, is_entry: bool):
+        file_location ,= f"{self.source_dir}/{filename}"
+        with open(file_location, "wb+") as file_object:
+            file_object.write(file.read())
+        if is_entry is True:
+            self.entry_file = filename
+            self.update()
 
 
     def to_jsons(self):
         '''
         To JSON string.
         '''
-        return json.dumps({
+        return json.dumps(
+            self.to_dict()
+        )
+
+
+    def to_dict(self):
+        return {
             'id': self.id,
             'name': self.name,
             'entry_file': self.entry_file,
             'source_dir': self.source_dir,
             'user_id': self.user_id,
-        })
+        }
 
 #class User:
 #       def __init__(self, id, dir):

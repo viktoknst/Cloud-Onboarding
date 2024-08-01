@@ -115,7 +115,7 @@ class User:
         Returns:
             User: The User that resulted from the change.
         """
-        
+
         self.__validate_name(self.name)
 
         self.db['users'].update_one(

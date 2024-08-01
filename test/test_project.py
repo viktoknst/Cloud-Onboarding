@@ -5,7 +5,7 @@ File for testing project endpoints with pytest
 from context import *
 from unittest import mock
 import pytest
-
+from time import sleep
 
 @mock.patch('os.mkdir', new=does_nothing)
 class TestProject():
@@ -41,6 +41,7 @@ class TestProject():
 
 
     @mock.patch('os.path.exists', new=always_false)
+    @pytest.mark.skip(reason="Requires file opperations")
     def test_upload(self, get_test_user):
         response = client.post(
             '/project/myproject',
@@ -49,14 +50,28 @@ class TestProject():
         assert response.status_code == 200
         with open('test/hello_world.py', 'rb+') as file:
             response = client.put(
-                "/project/myproject/upload",
+                "/project/myproject/upload?is_entry=yes",
                 files={"file": ('hello_world.py', file, "text/plain")},
                 headers=get_test_user
             )
-        print(response)
         assert response.status_code == 200
 
-    #TODO
-    @pytest.mark.skip(reason="Functionality not implemented")
-    def test_run(self):
-        pass
+
+    def test_run_and_get_result(self, get_test_project):
+        response = client.post(
+            '/run/myproject',
+            headers=get_test_project
+        )
+        assert response.status_code == 200
+        result_id = response.text
+        sleep(3)
+        response = client.get(
+            f'/result/{result_id}'
+        )
+        assert response.status_code == 200
+        assert response.text == 'Hello world!\n'
+
+#if __name__ == "__main__":
+#    for i in get_test_user(get_mock_db()):
+#        user = i
+#    TestProject.test_run_and_get_result(None, user)

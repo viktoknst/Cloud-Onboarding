@@ -1,13 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile
 
+
 from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
-#from app.models.project import Project
-#from app.schemas.project import ProjectUpdate
 import app.services.containerizer.project as project_service
+from app.external_dependencies.db_interface import DBProxy
 from app.routers.login import get_user_dependency
+from typing import Optional
 
 project_router = APIRouter()
 
@@ -26,8 +27,8 @@ def create_project(project_name: str, user: User = Depends(get_user_dependency))
     '''
     try:
         project = Project.create(user, project_name)
-    except Exception:
-        raise HTTPException(409, 'Failed to create project')
+    except Exception as ex:
+        raise HTTPException(409, 'Failed to create project') from ex
     return {'msg': 'Project created', 'project': project.to_jsons()}
 
 
@@ -59,33 +60,25 @@ def delete_project(project_name: str, user: User = Depends(get_user_dependency))
 @project_router.put(ENDPOINTS['project']+'/{project_name}/upload')
 def upload_code(
         project_name: str,
-        file: UploadFile,
-        is_entry: bool | None = None,
+        file_upload: UploadFile,
+        is_entry: Optional[bool] = None,
         user: User = Depends(get_user_dependency)
     ):
     '''
     Upload code to project
     '''
     project = get_project(user, project_name)
-
-    file_location = f"{project.source_dir}/{file.filename}"
-    with open(file_location, "wb+") as file_object:
-        file_object.write(file.file.read())
-    if is_entry is True:
-        project.entry_file = file.filename
-        project.update()
+    project.add_file(file_upload.file, file_upload.filename, is_entry==True)
     return 'Uploaded file to project'
 
 
-@project_router.post('/run/{project_id}')
-def run_project(project_id: str, user: User = Depends(get_user_dependency)):
+@project_router.post('/run/{project_name}')
+def run_project(project_name: str, user: User = Depends(get_user_dependency)):
     '''
     Endpoint for running project. 
     '''
-
-    project = Project.read(user, id=project_id)
-    db = DBProxy.get_instance().get_db()
-    result_id = project_service.create_detached_instance(project, db)
+    project = Project.read(user, name=project_name)
+    result_id = project_service.create_detached_instance(project)
     return result_id
 
 
@@ -94,4 +87,4 @@ def get_result(result_id: str):
     '''
     Returns result object.
     '''
-    return Result.read(id=result_id).to_jsons()
+    return Result.read(id=result_id).to_dict()

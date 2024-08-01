@@ -8,15 +8,13 @@ from app.crud.result_crud import Result
 class ProjectInstance:
     id: str
     container: Container
-    db: Database
     thread: Process
 
 
-    def __init__(self, container: Container, db: Database):
+    def __init__(self, container: Container):
         self.id = str(uuid.uuid4())
         #self.id = Container.id_attribute
         self.container = container
-        self.db = db
         thread = Process(target=self.run, args=[])
         thread.daemon = False
         self.thread = thread

@@ -8,6 +8,7 @@ import sys
 import mock
 import pytest
 import mongomock
+import shutil
 
 from fastapi.testclient import TestClient
 
@@ -66,6 +67,7 @@ def get_mock_db() -> mongomock.Database:
     '''
     return MockDBProxy.get_instance().get_db()
 
+
 @pytest.fixture
 def get_test_user(get_mock_db) -> any:
     '''
@@ -82,7 +84,7 @@ def get_test_user(get_mock_db) -> any:
             )
         assert responce.status_code == 200
 
-    result = client.post(
+    responce = client.post(
         '/token',
         json={
             'user_name': 'John Doe',
@@ -90,13 +92,40 @@ def get_test_user(get_mock_db) -> any:
         )
     assert responce.status_code == 200
 
-    token = result.json()['access_token']
+    token = responce.json()['access_token']
     auth_header = {"Authorization": f"Bearer {token}"}
 
     yield auth_header
 
     with mock.patch('os.path.exists', new=always_true), mock.patch('shutil.rmtree', new=does_nothing):
-        result = client.delete(
+        responce = client.delete(
             '/user',
             headers=auth_header
         )
+
+
+@pytest.fixture
+def get_test_project(get_test_user) -> any:
+    responce = client.post(
+        '/project/myproject',
+        headers=get_test_user
+    )
+    try:
+        os.mkdir('users/John Doe')
+        os.mkdir('users/John Doe/myproject')
+    except:
+        pass
+    with open('test/hello_world.py', 'rb+') as file:
+        response = client.put(
+            "/project/myproject/upload?is_entry=yes",
+            files={"file": ('hello_world.py', file, "text/plain")},
+            headers=get_test_user
+        )
+    print(responce)
+    assert response.status_code == 200
+    yield get_test_user
+    responce = client.delete(
+        '/project/myproject',
+        headers=get_test_user
+    )
+    shutil.rmtree('users/John Doe')
