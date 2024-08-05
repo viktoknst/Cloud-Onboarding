@@ -7,9 +7,12 @@ import os
 import uuid
 import json
 from typing import BinaryIO
+import shutil
+
 from pymongo.database import Database
 
 from app.crud.user_crud import User
+
 
 class Project:
     '''
@@ -112,12 +115,14 @@ class Project:
 
 
     def delete(self) -> None:
-        self.db['projects'].delete_one({'id': self.id})
-        os.rmdir(self.source_dir)
+        #if not os.path.exists(self.source_dir):
+        #    raise Exception("Faulty deletion; Aborting")
+        shutil.rmtree(self.source_dir)
+        self.db['projects'].delete_one({'id':self.id})
 
 
     def add_file(self, file: BinaryIO, filename: str, is_entry: bool):
-        file_location ,= f"{self.source_dir}/{filename}"
+        file_location = f"{self.source_dir}/{filename}"
         with open(file_location, "wb+") as file_object:
             file_object.write(file.read())
         if is_entry is True:

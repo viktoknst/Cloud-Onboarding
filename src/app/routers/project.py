@@ -68,8 +68,8 @@ def upload_code(
     Upload code to project
     '''
     project = get_project(user, project_name)
-    project.add_file(file_upload.file, file_upload.filename, is_entry==True)
-    return 'Uploaded file to project'
+    project.add_file(file_upload.file, file_upload.filename, is_entry == True)
+    return {'Uploaded file to project'}
 
 
 @project_router.post('/run/{project_name}')
@@ -77,7 +77,7 @@ def run_project(project_name: str, user: User = Depends(get_user_dependency)):
     '''
     Endpoint for running project. 
     '''
-    project = Project.read(user, name=project_name)
+    project = get_project(user, project_name)
     result_id = project_service.create_detached_instance(project)
     return result_id
 

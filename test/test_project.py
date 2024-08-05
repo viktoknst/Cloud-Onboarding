@@ -22,13 +22,13 @@ class TestProject():
 
 
     @mock.patch('os.path.exists', new=always_false)
-    def test_create_succeed(self, get_test_user):
+    def test_create_succeed(self, get_test_user, get_mock_db):
         responce = client.post(
             '/project/myproject',
             headers=get_test_user
         )
         assert responce.status_code == 200 # Now works
-
+        get_mock_db.drop_collection('users')
 
     @pytest.mark.skip(reason="Not in use")
     @mock.patch('os.path.exists', new=always_true)

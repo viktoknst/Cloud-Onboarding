@@ -97,35 +97,26 @@ def get_test_user(get_mock_db) -> any:
 
     yield auth_header
 
-    with mock.patch('os.path.exists', new=always_true), mock.patch('shutil.rmtree', new=does_nothing):
-        responce = client.delete(
-            '/user',
-            headers=auth_header
-        )
-
+    get_mock_db.drop_collection('users')
 
 @pytest.fixture
-def get_test_project(get_test_user) -> any:
+def get_test_project(get_test_user, get_mock_db) -> any:
+    os.mkdir('users/John Doe')
     responce = client.post(
         '/project/myproject',
         headers=get_test_user
     )
-    try:
-        os.mkdir('users/John Doe')
-        os.mkdir('users/John Doe/myproject')
-    except:
-        pass
+    assert responce.status_code == 200, responce.text
     with open('test/hello_world.py', 'rb+') as file:
         response = client.put(
-            "/project/myproject/upload?is_entry=yes",
-            files={"file": ('hello_world.py', file, "text/plain")},
-            headers=get_test_user
+            "/project/myproject/upload",
+            files={"file_upload": ('hello_world.py', file, "text/plain")},
+            headers=get_test_user,
+            params={'is_entry': True}
         )
-    print(responce)
-    assert response.status_code == 200
+    assert response.status_code == 200, responce.status_code
+
     yield get_test_user
-    responce = client.delete(
-        '/project/myproject',
-        headers=get_test_user
-    )
+
     shutil.rmtree('users/John Doe')
+    get_mock_db.drop_collection('projects')

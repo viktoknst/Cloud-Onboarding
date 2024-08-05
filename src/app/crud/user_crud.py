@@ -143,11 +143,10 @@ class User:
             _type_: _description_
         """
 
-        if not os.path.exists(self.dir):
-            raise Exception("Faulty deletion; Aborting")
-        shutil.rmtree(self.dir)
         self.db['users'].delete_one({'id':self.id})
-
+        if not os.path.exists(self.dir):
+            raise Exception("Faulty deletion")
+        shutil.rmtree(self.dir)
 
     def to_jsons(self) -> str:
         return json.dumps(
