@@ -41,23 +41,18 @@ class TestProject():
 
 
     @mock.patch('os.path.exists', new=always_false)
-    @pytest.mark.skip(reason="Requires file opperations")
-    def test_upload(self, get_test_user):
-        response = client.post(
-            '/project/myproject',
-            headers=get_test_user
-        )
-        assert response.status_code == 200
+    #@pytest.mark.skip(reason="Requires file opperations")
+    def test_upload(self, get_test_project):
         with open('test/hello_world.py', 'rb+') as file:
             response = client.put(
                 "/project/myproject/upload?is_entry=yes",
-                files={"file": ('hello_world.py', file, "text/plain")},
-                headers=get_test_user
+                files={"file_upload": ('hello_world.py', file, "text/plain")},
+                headers=get_test_project
             )
         assert response.status_code == 200
 
 
-    def test_run_and_get_result(self, get_test_project, get_mock_db):
+    def test_run_and_get_result(self, get_test_project):
         response = client.post(
             '/run/myproject',
             headers=get_test_project

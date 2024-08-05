@@ -68,7 +68,7 @@ def upload_code(
     Upload code to project
     '''
     project = get_project(user, project_name)
-    project.add_file(file_upload.file, file_upload.filename, is_entry == True)
+    project.add_file(file_upload.file, file_upload.filename, bool(is_entry))
     return {'Uploaded file to project'}
 
 
