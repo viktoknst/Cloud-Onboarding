@@ -1,27 +1,23 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
+
 
 from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
-from app.external_dependencies.db_interface import DBProxy
-#from app.models.project import Project
-from app.schemas.project import ProjectUpdate
 import app.services.containerizer.project as project_service
+from app.external_dependencies.db_interface import DBProxy
 from app.routers.login import get_user_dependency
+from typing import Optional
 
 project_router = APIRouter()
-
-User.set_db(DBProxy.get_instance().get_db())
-Result.set_db(DBProxy.get_instance().get_db())
-Project.set_db(DBProxy.get_instance().get_db())
 
 
 def get_project(user: User, project_name: str) -> Project:
     try:
-        return Project.create(user, project_name)
-    except:
-        raise HTTPException(404, detail='Project not found')
+        return Project.read(user, name=project_name)
+    except Exception as ex:
+        raise HTTPException(404, detail='Project not found') from ex
 
 
 @project_router.post(ENDPOINTS['project']+'/{project_name}')
@@ -29,7 +25,10 @@ def create_project(project_name: str, user: User = Depends(get_user_dependency))
     '''
     s.e.
     '''
-    project = get_project(user, project_name)
+    try:
+        project = Project.create(user, project_name)
+    except Exception as ex:
+        raise HTTPException(409, 'Failed to create project') from ex
     return {'msg': 'Project created', 'project': project.to_jsons()}
 
 
@@ -59,36 +58,34 @@ def delete_project(project_name: str, user: User = Depends(get_user_dependency))
 
 
 @project_router.put(ENDPOINTS['project']+'/{project_name}/upload')
-def upload_code(project_name: str, file_request: ProjectUpdate, user: User = Depends(get_user_dependency)):
+def upload_code(
+        project_name: str,
+        file_upload: UploadFile,
+        is_entry: Optional[bool] = None,
+        user: User = Depends(get_user_dependency)
+    ):
     '''
     Upload code to project
     '''
     project = get_project(user, project_name)
-    
-    file_location = f"{project.source_dir}/{file_request.file.filename}"
-    with open(file_location, "wb+") as file_object:
-        file_object.write(file_request.file.file.read())
-    if file_request.is_entry == True:
-        project.entry_file = file_request.file.filename
-        project.update()
-    return 'Uploaded file to project'
+    project.add_file(file_upload.file, file_upload.filename, bool(is_entry))
+    return {'Uploaded file to project'}
 
 
-@project_router.post('/run/{project_id}')
-def run_project(project_id: str, user: User = Depends(get_user_dependency)):
+@project_router.post('/run/{project_name}')
+def run_project(project_name: str, task: BackgroundTasks, user: User = Depends(get_user_dependency)):
     '''
     Endpoint for running project. 
     '''
+    project = get_project(user, project_name)
+    instance = project_service.create_detached_instance(project)
+    task.add_task(instance.run)
+    return {'id': instance.result.id}
 
-    project = Project.read(user, id=project_id)
-    db = DBProxy.get_instance().get_db()
-    result_id = project_service.create_detached_instance(project, db)
-    return result_id
 
 @project_router.get('/result/{result_id}')
 def get_result(result_id: str):
     '''
     Returns result object.
     '''
-    db = DBProxy.get_instance().get_db()
-    return Result.read(id=result_id).to_jsons()
+    return Result.read(id=result_id)

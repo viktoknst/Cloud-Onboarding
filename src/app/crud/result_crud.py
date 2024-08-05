@@ -4,7 +4,7 @@ Module that handles CRUD operations for results in the DB
 import uuid
 
 from pymongo.database import Database
-
+# TODO DELETEME 'Malko kato bager na detskata ploshtadka' -Miro
 class Result:
     '''
     Result model
@@ -17,20 +17,10 @@ class Result:
         cls.db = db
 
 
-    def __init__(self, id: str, result: str):
+    def __init__(self, id: str, status: str, result: str):
         self.id = id
+        self.status = status
         self.result = result
-
-
-    @staticmethod
-    def from_dict(json_dict: dict):
-        '''
-        Initialize from dict
-        '''
-        return Result(
-            json_dict['id'],
-            json_dict['result']
-        )
 
 
     @classmethod
@@ -44,12 +34,12 @@ class Result:
             id (str): _description_
         """
         id = str(uuid.uuid4())
-        
+
         if result is None:
             status = 'running'
         else:
             status = 'done'
-        
+
         cls.db['results'].insert_one(
             {
                 'id': id,
@@ -57,8 +47,8 @@ class Result:
                 'result': result
             }
         )
-        
-        return Result(id, result)
+
+        return Result(id, status, result)
 
 
     @classmethod
@@ -79,23 +69,21 @@ class Result:
             }
         )
         if result is None:
-            raise Exception('Result does not exist')
-        return result
-
+            raise ValueError('Result id does not exist')
+        return Result(
+            result['id'],
+            result['status'],
+            result['result'],
+        )
 
     def update(self) -> None:
-        if self.result is None:
-            status = 'running'
-        else:
-            status = 'done'
-        
         self.db['results'].update_one(
             {
                 'id': self.id
             },
             {'$set':
                 {
-                    'status': status,
+                    'status': self.status,
                     'result': self.result
                 }
             }
@@ -108,3 +96,10 @@ class Result:
                 'id': self.id
             }
         )
+
+
+    def to_dict(self):
+        return{
+            'id': self.id,
+            'result': self.result
+        }

@@ -45,11 +45,11 @@ class User:
             None
         """
 
-        if re.match(r'^[a-zA-Z0-9 _-]{4,16}$', name) is None:
-            raise ValueError("Username is invalid")
+        cls.__validate_name(name)
+        cls.__validate_password(password)
 
         if cls.db['users'].find_one({'name': name}) is not None:
-            raise Exception("Username is in use!")
+            raise ValueError("Username is in use!")
 
         dir = USERS_DIRECTORY+'/'+name
 
@@ -67,7 +67,7 @@ class User:
         os.mkdir(dir)
 
         cls.db['users'].insert_one(
-            user.to_jsons()
+            json.loads(user.to_jsons())
         )
 
         return user
@@ -115,14 +115,20 @@ class User:
         Returns:
             User: The User that resulted from the change.
         """
+
+        self.__validate_name(self.name)
+
         self.db['users'].update_one(
             {
+                'id':self.id
+            },
+            {'$set':{
                 # id is explicitly ignored; it makes 0 sense to change it
                 'name': self.name,
                 'dir': self.dir,
                 'password_hash': self.password_hash,
                 'salt': self.salt,
-            }
+            }}
         )
 
 
@@ -136,30 +142,52 @@ class User:
         Returns:
             _type_: _description_
         """
-        
-        if not os.path.exists(self.dir):
-            raise Exception("Faulty deletion; Aborting")
-        shutil.rmtree(self.dir)
-        self.db['users'].delete_one({'id':self.id})
 
+        self.db['users'].delete_one({'id':self.id})
+        if not os.path.exists(self.dir):
+            raise Exception("Faulty deletion")
+        shutil.rmtree(self.dir)
 
     def to_jsons(self) -> str:
         return json.dumps(
-            {
+            self.to_dict()
+        )
+
+
+    def to_dict(self) -> any:
+        return{
                 'id': self.id,
                 'name': self.name,
                 'dir': self.dir,
                 'password_hash': self.password_hash,
                 'salt': self.salt,
             }
-        )
 
 
     def change_password(self, new_password: str) -> None:
         salt = auth_utils.gen_salt()
         password_hash = auth_utils.hash_password(new_password, salt)
+        self.__validate_password(new_password)
         self.salt = salt
         self.password_hash = password_hash
+
+
+    @classmethod
+    def __validate_name(cls, name: str):
+        '''
+        Throws VallueError
+        '''
+        if re.fullmatch(r'^[a-zA-Z0-9 _-]{4,16}$', name) is None:
+            raise ValueError("Username is invalid!")
+
+
+    @classmethod
+    def __validate_password(cls, password: str):
+        '''
+        Throws VallueError
+        '''
+        if re.fullmatch(r'^[a-zA-Z0-9 _-]{4,16}$', password) is None:
+            raise ValueError("Password is invalid!")
 
 # import asyncio.locks TODO: we have 0 protection against concurent user creation:
 # A creates user John

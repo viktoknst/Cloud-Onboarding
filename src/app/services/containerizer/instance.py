@@ -1,34 +1,36 @@
-from docker.models.containers import Container
 from multiprocessing import Process
 import uuid
+from docker.models.containers import Container
+from docker.models.images import Image
 
 from pymongo.database import Database
-import app.crud.result_crud as results
-from app.models.result import Result
+from app.crud.result_crud import Result
 
 class ProjectInstance:
-    id: str
-    container: Container
-    db: Database
-    thread: Process
-
-    def __init__(self, container: Container, db: Database):
-        self.id = str(uuid.uuid4())
-        #self.id = Container.id_attribute
+    def __init__(self, container: Container, image: Image):
+        self.result = Result.create(None)
         self.container = container
-        self.db = db
+        self.image = image
+
         thread = Process(target=self.run, args=[])
         thread.daemon = False
         self.thread = thread
 
+
     def run(self):
-        results.create(self.db, self.id)
         self.container.start()
         self.container.wait() # takes a long while...
-        result = self.container.logs().decode()
-        results.update(self.db, Result(self.id, result))
+        result_str = self.container.logs().decode()
+        self.container.remove()
+        self.image.remove(force=True)
+
+        self.result.result = result_str
+        self.result.status = 'done'
+        self.result.update()
+
 
     def start(self):
         self.thread.start()
+
 
 # Used by project

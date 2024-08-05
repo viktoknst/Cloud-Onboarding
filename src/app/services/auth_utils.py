@@ -38,7 +38,7 @@ def gen_auth_token(
     cty: str = "JWT"
     ):
     if iat is None:
-        iat = str(int(time.time())) # warning: dumb code, and time is NOT posix conformant on... i'd guess microwaves
+        iat = str(int(time.time())) # warning: dumb code, and time is NOT posix conformant
     if exp is None:
         exp = str(int(time.time()+DEFAULT_EXPIRY))
     if alg != 'HS256':
@@ -118,7 +118,9 @@ def validate_auth_token(token: str):
 #    signature64 = base64.urlsafe_b64encode(signature)
 #    token = header64+b'.'+payload64+b'.'+signature64
 #    token = token.decode()
-#    assert token == 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJsb2dnZWRJbkFzIjogImFkbWluIiwgImlhdCI6IDE0MjI3Nzk2Mzh9.5q7_W0yEwPe6-0eMAIbWDfWxh7ZBt5U0Fr4L23eTq3Q='
+#    assert token ==    'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.
+#                       eyJsb2dnZWRJbkFzIjogImFkbWluIiwgImlhdCI6IDE0MjI3Nzk2Mzh9.
+#                       5q7_W0yEwPe6-0eMAIbWDfWxh7ZBt5U0Fr4L23eTq3Q='
 #
 #    token = gen_auth_token('John')
 #    print(validate_auth_token(token))
