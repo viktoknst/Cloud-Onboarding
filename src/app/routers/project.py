@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
 
 
 from app.special.config import ENDPOINTS
@@ -73,13 +73,14 @@ def upload_code(
 
 
 @project_router.post('/run/{project_name}')
-def run_project(project_name: str, user: User = Depends(get_user_dependency)):
+def run_project(project_name: str, task: BackgroundTasks, user: User = Depends(get_user_dependency)):
     '''
     Endpoint for running project. 
     '''
     project = get_project(user, project_name)
-    result_id = project_service.create_detached_instance(project)
-    return result_id
+    instance = project_service.create_detached_instance(project)
+    task.add_task(instance.run)
+    return {'id': instance.result.id}
 
 
 @project_router.get('/result/{result_id}')
@@ -87,4 +88,4 @@ def get_result(result_id: str):
     '''
     Returns result object.
     '''
-    return Result.read(id=result_id).to_dict()
+    return Result.read(id=result_id)

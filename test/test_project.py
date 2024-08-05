@@ -57,19 +57,23 @@ class TestProject():
         assert response.status_code == 200
 
 
-    def test_run_and_get_result(self, get_test_project):
+    def test_run_and_get_result(self, get_test_project, get_mock_db):
         response = client.post(
             '/run/myproject',
             headers=get_test_project
         )
         assert response.status_code == 200
-        result_id = response.text
-        sleep(3)
+        result_id = response.json()['id']
         response = client.get(
-            f'/result/{result_id}'
+                f'/result/{result_id}'
         )
+        while(response.json()['status'] == 'running'):
+            response = client.get(
+                f'/result/{result_id}'
+            )
+            sleep(1)
         assert response.status_code == 200
-        assert response.text == 'Hello world!\n'
+        assert response.json()['result'] == 'Hello world!\n'
 
 #if __name__ == "__main__":
 #    for i in get_test_user(get_mock_db()):

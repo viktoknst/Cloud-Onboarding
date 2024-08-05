@@ -17,20 +17,10 @@ class Result:
         cls.db = db
 
 
-    def __init__(self, id: str, result: str):
+    def __init__(self, id: str, status: str, result: str):
         self.id = id
+        self.status = status
         self.result = result
-
-
-    @classmethod
-    def from_dict(cls, json_dict: dict):
-        '''
-        Initialize from dict
-        '''
-        return Result(
-            json_dict['id'],
-            json_dict['result']
-        )
 
 
     @classmethod
@@ -58,7 +48,7 @@ class Result:
             }
         )
 
-        return Result(id, result)
+        return Result(id, status, result)
 
 
     @classmethod
@@ -80,22 +70,20 @@ class Result:
         )
         if result is None:
             raise ValueError('Result id does not exist')
-        return cls.from_dict(result)
-
+        return Result(
+            result['id'],
+            result['status'],
+            result['result'],
+        )
 
     def update(self) -> None:
-        if self.result is None:
-            status = 'running'
-        else:
-            status = 'done'
-
         self.db['results'].update_one(
             {
                 'id': self.id
             },
             {'$set':
                 {
-                    'status': status,
+                    'status': self.status,
                     'result': self.result
                 }
             }
