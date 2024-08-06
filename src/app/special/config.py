@@ -1,6 +1,7 @@
 '''
 Holds congiguration option
 '''
+from os.path import abspath, join
 
 ENDPOINTS = {
     'discovery'     : '/',
@@ -12,4 +13,4 @@ ENDPOINTS = {
     'result'        : '/result',
 }
 
-USERS_DIRECTORY = '/home/sasho_b/Coding/cob2/users'
+USERS_DIRECTORY = abspath(join(abspath(__file__), '../../../../users'))
