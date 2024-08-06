@@ -5,7 +5,7 @@ import hmac
 import base64
 from hashlib import sha256
 
-SECRET = "secret".encode() # CHANGE THIS
+SECRET = "secret".encode() #  TODO CHANGE THIS
 DEFAULT_EXPIRY = 15 * 60 # 15 mins
 
 

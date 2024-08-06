@@ -1,3 +1,8 @@
+"""
+File for project router.
+"""
+
+
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
@@ -13,6 +18,9 @@ project_router = APIRouter()
 
 
 def get_project(user: User, project_name: str) -> Project:
+    """
+    Helper for getting project. Throws HTTPException on fail.
+    """
     try:
         return Project.read(user, name=project_name)
     except Exception as ex:

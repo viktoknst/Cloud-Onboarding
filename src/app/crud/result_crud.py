@@ -84,6 +84,10 @@ class Result:
 
 
     def update(self) -> None:
+        """
+        Saves the current state of the object (fields) to the db.
+        Some fields that should not be altered are not saved.
+        """
         self.db['results'].update_one(
             {
                 'id': self.id

@@ -54,9 +54,8 @@ def verify_token(token: str):
 
 async def get_user_id(token: str = Depends(oauth2_scheme)):
     '''
-    DEPRECATED
     Dependency for token auth.
-    Either takes a token and validates it, returning the user name, or goes to oauth2
+    Either takes a token and validates it, returning the user id, or goes to oauth2
     '''
     status, token = auth_utils.validate_auth_token(token)
     if status != 'OK':
