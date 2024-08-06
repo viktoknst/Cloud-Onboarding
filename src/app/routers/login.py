@@ -1,6 +1,6 @@
-'''
+"""
 Login router. For security and authorization.
-'''
+"""
 
 from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
@@ -16,9 +16,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @login_router.post("/token")
 async def token_endpoint(r: LoginSchema):
-    '''
-    Endpoint which takes the user's password and username and returns a JWT. Forward for auth_utils
-    '''
+    """
+    Endpoint which takes the user's password and username and returns a JWT.
+    Forward for auth_utils.
+    """
     # may or may not be vulnerable to timing attacks... TODO
     try:
         user = User.read(name = r.user_name)
