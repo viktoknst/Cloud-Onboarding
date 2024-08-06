@@ -52,8 +52,7 @@ def verify_token(token: str):
     return decrypted_token
 
 
-# TODO remove
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_user_id(token: str = Depends(oauth2_scheme)):
     '''
     DEPRECATED
     Dependency for token auth.
@@ -65,7 +64,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return token['payload']['sub']
 
 
-async def get_user_dependency(user_id: str = Depends(get_current_user)) -> User:
+async def get_user_dependency(user_id: str = Depends(get_user_id)) -> User:
     '''
     Dependency for token auth.
     Either takes a token and validates it, returning the user dict, or goes to oauth2
@@ -75,13 +74,3 @@ async def get_user_dependency(user_id: str = Depends(get_current_user)) -> User:
     except Exception as ex:
         raise HTTPException(404, detail='User not found') from ex
     return user
-
-
-# TODO remove
-@login_router.get("/secure-endpoint")
-async def secure_endpoint(current_user: str = Depends(get_current_user)):
-    '''
-    DEPRECATED
-    Example secure endpoint with security dependency.
-    '''
-    return {"message": "Welcome to the secure endpoint", "user": current_user}

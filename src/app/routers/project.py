@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
 from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
 
 from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
@@ -71,7 +72,11 @@ def upload_code(
 
 
 @project_router.post('/run/{project_name}')
-def run_project(project_name: str, task: BackgroundTasks, user: User = Depends(get_user_dependency)):
+def run_project(
+        project_name: str,
+        task: BackgroundTasks,
+        user: User = Depends(get_user_dependency)
+    ):
     '''
     Endpoint for running project. 
     '''
