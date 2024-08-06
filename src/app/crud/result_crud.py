@@ -4,7 +4,7 @@ Module that handles CRUD operations for results in the DB
 import uuid
 
 from pymongo.database import Database
-# TODO DELETEME 'Malko kato bager na detskata ploshtadka' -Miro
+
 class Result:
     '''
     Result model

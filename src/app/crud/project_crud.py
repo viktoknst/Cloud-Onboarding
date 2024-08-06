@@ -16,7 +16,7 @@ from app.crud.user_crud import User
 
 class Project:
     """
-    Python representation of a user's project.
+    Object representation of a user's project.
     Handles saving/reading from a db.
     Expects a mong-like db interface.
     """
@@ -172,8 +172,8 @@ class Project:
         """
         #if not os.path.exists(self.source_dir):
         #    raise Exception("Faulty deletion; Aborting")
-        shutil.rmtree(self.source_dir)
         self.db['projects'].delete_one({'id':self.id})
+        shutil.rmtree(self.source_dir)
 
 
     # TODO ambi name
