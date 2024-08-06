@@ -51,6 +51,7 @@ def verify_token(token: str):
 
     return decrypted_token
 
+
 # TODO remove
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     '''

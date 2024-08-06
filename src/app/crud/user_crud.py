@@ -113,9 +113,10 @@ class User:
         Returns:
             User: The user from the db
         """
+        user_dict = None
         if id is not None:
             user_dict = cls.db['users'].find_one({'id':id})
-        if name is not None:
+        elif name is not None:
             user_dict = cls.db['users'].find_one({'name':name})
         else:
             raise ValueError('No arguments provided')
