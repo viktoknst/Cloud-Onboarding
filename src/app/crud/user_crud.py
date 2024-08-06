@@ -225,17 +225,11 @@ class User:
 
     @classmethod
     def __validate_password(cls, password: str):
-        '''
-        Throws VallueError
-        '''
+        """
+        Ensures string is a valid password.
+
+        Raises:
+            ValueError: Password invalid
+        """
         if re.fullmatch(r'^[a-zA-Z0-9 _-]{4,16}$', password) is None:
             raise ValueError("Password is invalid!")
-
-# import asyncio.locks TODO: we have 0 protection against concurent user creation:
-# A creates user John
-# B creates user John
-# A sees John doesnt exist
-# B sees Jogn doesnt exist
-# A inserts one John into DB
-# B inserts another Jogn into DB
-# XO
