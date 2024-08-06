@@ -75,14 +75,13 @@ def get_test_user(get_mock_db) -> any:
     Returns header to be used for the newly created user.
     Cleans up after.
     '''
-    with mock.patch('os.mkdir', new=does_nothing), mock.patch('os.path.exists', new=always_false):
-        responce = client.post(
-                '/user',
-                json={
-                    'user_name': 'John Doe',
-                    'password': 'password1234'}
-            )
-        assert responce.status_code == 200
+    responce = client.post(
+            '/user',
+            json={
+                'user_name': 'John Doe',
+                'password': 'password1234'}
+        )
+    assert responce.status_code == 200
 
     responce = client.post(
         '/token',
@@ -97,11 +96,12 @@ def get_test_user(get_mock_db) -> any:
 
     yield auth_header
 
+    if os.path.exists('users/John Doe'):
+        shutil.rmtree('users/John Doe')
     get_mock_db.drop_collection('users')
 
 @pytest.fixture
 def get_test_project(get_test_user, get_mock_db) -> any:
-    os.mkdir('users/John Doe')
     responce = client.post(
         '/project/myproject',
         headers=get_test_user
@@ -117,6 +117,6 @@ def get_test_project(get_test_user, get_mock_db) -> any:
     assert response.status_code == 200, responce.status_code
 
     yield get_test_user
-
-    shutil.rmtree('users/John Doe')
+    if os.path.exists('users/John Doe/myproject'):
+        shutil.rmtree('users/John Doe/myproject')
     get_mock_db.drop_collection('projects')
