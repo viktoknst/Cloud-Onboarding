@@ -76,6 +76,7 @@ class Result:
             result['result'],
         )
 
+
     def update(self) -> None:
         self.db['results'].update_one(
             {
