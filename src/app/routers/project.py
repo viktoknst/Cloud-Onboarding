@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
 
 
@@ -6,9 +8,7 @@ from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
 import app.services.containerizer.project as project_service
-from app.external_dependencies.db_interface import DBProxy
 from app.routers.login import get_user_dependency
-from typing import Optional
 
 project_router = APIRouter()
 

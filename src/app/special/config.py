@@ -1,6 +1,7 @@
 '''
 Holds congiguration option
 '''
+
 from os.path import abspath, join
 
 ENDPOINTS = {
