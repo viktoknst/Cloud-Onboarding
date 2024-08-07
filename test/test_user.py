@@ -68,7 +68,7 @@ class TestUser():
                 'password': 'password1234'},
             headers=get_test_user
         )
-        assert responce.status_code == 409 # Failed to update user
+        assert responce.status_code == 409, responce # Failed to update user
 
 
     def test_update_succeed(self, get_test_user):
@@ -79,7 +79,7 @@ class TestUser():
                 'password': 'password4321'},
             headers=get_test_user
         )
-        assert responce.status_code == 200
+        assert responce.status_code == 200, responce.text
         assert json.loads(responce.text)['user']['name'] == 'Jane Doe'
 
 
@@ -90,4 +90,4 @@ class TestUser():
             '/user',
             headers=get_test_user
         )
-        assert responce.status_code == 200
+        assert responce.status_code == 200, responce.text

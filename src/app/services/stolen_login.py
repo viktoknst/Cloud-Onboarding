@@ -1,4 +1,4 @@
-# TODO!!!
+# TODO DELETE THIS
 #
 # IMPLEMENT THE SAME LOGIC IN `login.py`
 #

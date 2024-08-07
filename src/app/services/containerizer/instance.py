@@ -1,9 +1,7 @@
 from multiprocessing import Process
-import uuid
 from docker.models.containers import Container
 from docker.models.images import Image
 
-from pymongo.database import Database
 from app.crud.result_crud import Result
 
 class ProjectInstance:

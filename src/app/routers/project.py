@@ -1,19 +1,26 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
+"""
+File for project router.
+"""
 
+
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
 
 from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
 import app.services.containerizer.project as project_service
-from app.external_dependencies.db_interface import DBProxy
 from app.routers.login import get_user_dependency
-from typing import Optional
 
 project_router = APIRouter()
 
 
 def get_project(user: User, project_name: str) -> Project:
+    """
+    Helper for getting project. Throws HTTPException on fail.
+    """
     try:
         return Project.read(user, name=project_name)
     except Exception as ex:
@@ -73,7 +80,11 @@ def upload_code(
 
 
 @project_router.post('/run/{project_name}')
-def run_project(project_name: str, task: BackgroundTasks, user: User = Depends(get_user_dependency)):
+def run_project(
+        project_name: str,
+        task: BackgroundTasks,
+        user: User = Depends(get_user_dependency)
+    ):
     '''
     Endpoint for running project. 
     '''
