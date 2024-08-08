@@ -1,4 +1,6 @@
 import requests
+from time import sleep
+from os.path import basename
 
 class WebClient:
     def __init__(self, user_name: str, password: str, server_url: str):
@@ -6,6 +8,10 @@ class WebClient:
         self.password = password
         self.server_url = server_url
         self.auth_header = None
+        try:
+            requests.get(server_url, timeout=3)
+        except:
+            print("Server not found!")
 
 
     def sign_in(self):
@@ -99,3 +105,44 @@ class WebClient:
 
         return responce
     
+
+    def delete_project(self, project_name):
+        if not self.auth_header:
+            return
+
+        responce = requests.delete(
+            self.server_url + f'/project/{project_name}',
+            headers = self.auth_header
+        )
+
+        return responce
+    
+
+    def upload_file(self, project_name, file_path, is_entry):
+        with open(file_path, 'rb+') as file:
+            response = requests.put(
+                self.server_url + f"/project/{project_name}/upload?is_entry={is_entry}",
+                files = {"file_upload": (basename(file.name), file, "text/plain")},
+                headers = self.auth_header
+            )
+        return response
+
+
+    def run_project(self, project_name):
+        response = requests.post(
+            self.server_url + f'/run/{project_name}',
+            headers = self.auth_header
+        )
+        if not response.status_code == 200:
+            return response
+        
+        result_id = response.json()['id']
+        response = requests.get(
+                self.server_url + f'/result/{result_id}'
+        )
+        while(response.json()['status'] == 'running'):
+            response = requests.get(
+                self.server_url + f'/result/{result_id}'
+            )
+            sleep(1)
+        return response
