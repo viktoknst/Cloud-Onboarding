@@ -5,32 +5,18 @@ import docker
 from app.crud.project_crud import Project
 from app.services.containerizer.instance import ProjectInstance
 
-
-ROOT = Path("/home/sasho_b/Coding/cob/docker")
-DOCKER_TEMPLATE = Path(ROOT, "dockerfile_template")
 CLIENT = docker.from_env()
 
 
-def fillout_template(p: Project) -> None:
-    template = ''
-    entry_file = Path(p.entry_file)
-
-    with open(DOCKER_TEMPLATE, 'r', encoding='utf-8') as file:
-        template = file.read()
-        template = template.replace('{entry_file}', entry_file.name)
-
-    with open(Path(p.source_dir,"Dockerfile"), "w+", encoding='utf-8') as save_to:
-        save_to.write(template)
-
-
 def create_detached_instance(p: Project):
-    fillout_template(p)
+    image = CLIENT.images.get("python")
 
-    image = CLIENT.images.build(path=str(p.source_dir), rm=True)[0] # rm=True OR IT BREAKS!
-
-    container = CLIENT.containers.create(image.id)
-    instance = ProjectInstance(container, image)
-
+    container = CLIENT.containers.create(
+        image.id,
+        command=f"python /src/{p.entry_file}",
+        volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
+    )
+    instance = ProjectInstance(container)
     return instance
 
 # OLD

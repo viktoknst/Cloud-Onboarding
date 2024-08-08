@@ -7,10 +7,9 @@ from pymongo.database import Database
 from app.crud.result_crud import Result
 
 class ProjectInstance:
-    def __init__(self, container: Container, image: Image):
+    def __init__(self, container: Container):
         self.result = Result.create(None)
         self.container = container
-        self.image = image
 
         thread = Process(target=self.run, args=[])
         thread.daemon = False
@@ -22,7 +21,6 @@ class ProjectInstance:
         self.container.wait() # takes a long while...
         result_str = self.container.logs().decode()
         self.container.remove()
-        self.image.remove(force=True)
 
         self.result.result = result_str
         self.result.status = 'done'

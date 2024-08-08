@@ -30,6 +30,7 @@ class TestProject():
         assert responce.status_code == 200 # Now works
         get_mock_db.drop_collection('users')
 
+
     def test_read(self, get_test_project):
         responce = client.get(
             '/project/myproject',
