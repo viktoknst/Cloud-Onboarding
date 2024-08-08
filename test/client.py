@@ -25,7 +25,7 @@ class WebClient:
         )
 
         return responce
-    
+
 
     def log_in(self):
         responce = requests.post(
@@ -42,6 +42,14 @@ class WebClient:
 
         token = responce.json()['access_token']
         self.auth_header = {"Authorization": f"Bearer {token}"}
+        return responce
+
+
+    def read(self):
+        responce = requests.get(
+            self.server_url + '/user',
+            headers = self.auth_header
+        )
         return responce
 
 
@@ -65,15 +73,6 @@ class WebClient:
         return responce
 
 
-    def delete(self):
-        responce = requests.delete(
-            self.server_url + '/user',
-            headers = self.auth_header
-        )
-
-        return responce
-
-
     def change_password(self, new_password):
         if not self.auth_header:
             return
@@ -92,7 +91,16 @@ class WebClient:
             self.password = new_password
 
         return responce
-    
+
+
+    def delete(self):
+        responce = requests.delete(
+            self.server_url + '/user',
+            headers = self.auth_header
+        )
+
+        return responce
+
 
     def create_project(self, project_name):
         if not self.auth_header:
@@ -104,7 +112,15 @@ class WebClient:
         )
 
         return responce
-    
+
+
+    def read_project(self, project_name):
+        responce = requests.get(
+            self.server_url + f'/project/{project_name}',
+            headers = self.auth_header
+        )
+        return responce
+
 
     def delete_project(self, project_name):
         if not self.auth_header:
@@ -116,7 +132,7 @@ class WebClient:
         )
 
         return responce
-    
+
 
     def upload_file(self, project_name, file_path, is_entry):
         with open(file_path, 'rb+') as file:

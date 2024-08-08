@@ -29,7 +29,7 @@ def create_project(project_name: str, user: User = Depends(get_user_dependency))
         project = Project.create(user, project_name)
     except Exception as ex:
         raise HTTPException(409, 'Failed to create project') from ex
-    return {'msg': 'Project created', 'project': project.to_jsons()}
+    return {'msg': 'Project created', 'project': project.to_dict()}
 
 
 @project_router.get(ENDPOINTS['project']+'/{project_name}')
@@ -38,7 +38,7 @@ def read_project(project_name: str, user: User = Depends(get_user_dependency)):
     Endpoint for reading project.
     '''
     project = get_project(user, project_name)
-    return {'project':project.to_jsons()}
+    return {'project':project.to_dict()}
 
 
 # NOT IN USE
@@ -54,7 +54,7 @@ def delete_project(project_name: str, user: User = Depends(get_user_dependency))
     '''
     project = get_project(user, project_name)
     project.delete()
-    return {'msg': 'Project deleted', 'project': project.to_jsons()}
+    return {'msg': 'Project deleted', 'project': project.to_dict()}
 
 
 @project_router.put(ENDPOINTS['project']+'/{project_name}/upload')

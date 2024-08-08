@@ -30,6 +30,13 @@ class TestProject():
         assert responce.status_code == 200 # Now works
         get_mock_db.drop_collection('users')
 
+    def test_read(self, get_test_project):
+        responce = client.get(
+            '/project/myproject',
+            headers=get_test_project
+        )
+        assert responce.json()['project']['name'] == 'myproject'
+
 
     @pytest.mark.skip(reason="Not in use")
     @mock.patch('os.path.exists', new=always_true)
