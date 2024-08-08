@@ -2,6 +2,17 @@ This document describes how the project and relevant dependencies, tools, etc. s
 
 This file is WIP, and not complete.
 
+## Source
+
+First install the source code via `git clone https://github.com/Al1002/cloud_computing.git`
+
+Then, install python requirements, (either in a virtual environment or otherwise)
+Ex: `pip install -i requirements.txt`
+
+To make sure installation is successful, try running `pytest test`
+
+To run the project, use `./start-server`
+
 ## Dependencies
 The app depends on both MongoDB and Docker Engine. 
 
