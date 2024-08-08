@@ -30,12 +30,21 @@ class TestProject():
         assert responce.status_code == 200 # Now works
         get_mock_db.drop_collection('users')
 
+
     @pytest.mark.skip(reason="Not in use")
     @mock.patch('os.path.exists', new=always_true)
     def test_update(self, get_test_user):
         responce = client.post(
             '/project/myproject',
             headers=get_test_user
+        )
+        assert responce.status_code == 200
+
+
+    def test_delete(self, get_test_project):
+        responce = client.delete(
+            '/project/myproject',
+            headers=get_test_project
         )
         assert responce.status_code == 200
 
