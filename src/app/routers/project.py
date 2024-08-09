@@ -6,7 +6,7 @@ from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
-import app.services.containerizer.project as project_service
+from app.services import containerizer
 from app.routers.login import get_user_dependency
 
 project_router = APIRouter()
@@ -99,12 +99,12 @@ def update_dependencies():
 
 
 @project_router.post('/run/{project_name}')
-def run_project(project_name: str, task: BackgroundTasks, user: User = Depends(get_user_dependency)):
+def run_project(project_name: str, task: BackgroundTasks, user: User =Depends(get_user_dependency)):
     '''
     Endpoint for running project. 
     '''
     project = get_project(user, project_name)
-    instance = project_service.create_detached_instance(project)
+    instance = containerizer.create_detached_instance(project)
     task.add_task(instance.run)
     return {'id': instance.result.id}
 
