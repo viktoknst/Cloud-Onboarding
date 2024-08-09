@@ -137,11 +137,26 @@ class WebClient:
     def upload_file(self, project_name, file_path, is_entry):
         with open(file_path, 'rb+') as file:
             response = requests.put(
-                self.server_url + f"/project/{project_name}/upload?is_entry={is_entry}",
+                self.server_url + f"/project/files/{project_name}/{basename(file.name)}?is_entry={is_entry}",
                 files = {"file_upload": (basename(file.name), file, "text/plain")},
-                headers = self.auth_header
+                headers = self.auth_header,
+                timeout=3
             )
         return response
+
+
+    def delete_file(self, project_name, file_path):
+        response = requests.delete(
+                self.server_url + f"/project/files/{project_name}/{file_path}",
+                headers = self.auth_header,
+                timeout=3
+            )
+        return response
+
+
+# TODO
+    def update_dependencies(self, project_name, requirements_file):
+        pass
 
 
     def run_project(self, project_name):

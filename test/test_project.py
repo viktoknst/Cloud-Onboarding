@@ -62,7 +62,7 @@ class TestProject():
     def test_upload(self, get_test_project):
         with open('test/hello_world.py', 'rb+') as file:
             response = client.put(
-                "/project/myproject/upload?is_entry=yes",
+                "/project/files/myproject/hello_world.py?is_entry=yes",
                 files={"file_upload": ('hello_world.py', file, "text/plain")},
                 headers=get_test_project
             )

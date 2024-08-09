@@ -121,13 +121,43 @@ class Project:
         self.db['projects'].delete_one({'id':self.id})
 
 
-    def add_file(self, file: BinaryIO, filename: str, is_entry: bool):
-        file_location = f"{self.source_dir}/{filename}"
+    def add_dir(self, dir_path: str):
+        if os.path.isdir(dir_path):
+            return
+        os.mkdir(dir_path)
+
+
+    def add_file(self, file_path: str, file: BinaryIO, is_entry: bool):
+        """Adds a file to the project
+
+        Args:
+            file (BinaryIO): File data
+            filename (str): File name
+            is_entry (bool): Is the file an entry point
+        """
+        file_location = f"{self.source_dir}/{file_path}"
         with open(file_location, "wb+") as file_object:
             file_object.write(file.read())
         if is_entry is True:
-            self.entry_file = filename
+            self.entry_file = file_path
             self.update()
+
+
+    def remove_file(self, file_path: str):
+        """Removes file OR directory tree
+
+        Args:
+            file_path (str): the object to delete
+
+        Raises:
+            ValueError: Path does not exist
+        """
+        if not os.path.exists(file_path):
+            raise ValueError(f"{file_path} does not exist!")
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        else:
+            shutil.rmtree(file_path)
 
 
     def to_jsons(self):
@@ -148,22 +178,19 @@ class Project:
             'user_id': self.user_id,
         }
 
-#class User:
-#       def __init__(self, id, dir):
-#        self.id = id
-#        self.dir = dir
-#import mongomock
-#if __name__ == '__main__':
-#    a_user = User('abc123','/home/sasho_b/Coding/cob2/users')
-#    Project.set_db(mongomock.MongoClient().get_database('mydb'))
-#
-#    os.rmdir('/home/sasho_b/Coding/cob2/users/myproject')
-#    myproject = Project.create(a_user, 'myproject')
-#    myproject.name = 'new_name'
-#    the_id = myproject.id
-#    myproject.update()
-#    project_by_id = Project.read(a_user, id=the_id)
-#    assert myproject.name == project_by_id.name
-#    project_by_name = Project.read(a_user, name='new_name')
-#    assert myproject.id == project_by_name.id
-#
+
+    def read_file_structure(self):
+        """
+        Dir to json-esque dict
+        """
+        tree = {}
+        for root, dirs, files in os.walk(self.source_dir):
+            subdir = tree
+            for part in root.replace(self.source_dir, '').strip(os.sep).split(os.sep):
+                if part:
+                    subdir = subdir.setdefault(part, {})
+            for d in dirs:
+                subdir[d] = {}
+            for f in files:
+                subdir[f] = None
+        return tree

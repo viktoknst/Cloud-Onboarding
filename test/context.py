@@ -109,12 +109,12 @@ def get_test_project(get_test_user, get_mock_db) -> any:
     assert responce.status_code == 200, responce.text
     with open('test/hello_world.py', 'rb+') as file:
         response = client.put(
-            "/project/myproject/upload",
+            "/project/files/myproject/hello_world.py",
             files={"file_upload": ('hello_world.py', file, "text/plain")},
             headers=get_test_user,
             params={'is_entry': True}
         )
-    assert response.status_code == 200, responce.status_code
+    assert response.status_code == 200, response.text
 
     yield get_test_user
     if os.path.exists('users/John Doe/myproject'):
