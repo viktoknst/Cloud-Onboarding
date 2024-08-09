@@ -144,14 +144,21 @@ class WebClient:
         return responce
 
 
-    def upload_file(self, project_name, file_path, is_entry):
-        with open(file_path, 'rb+') as file:
+    def upload_file(self, project_name, project_path, is_entry: bool = None, is_dir: bool = None, file_path: str = None):
+        if is_dir:
             response = requests.put(
-                self.server_url + f"/project/files/{project_name}/{basename(file.name)}?is_entry={is_entry}",
-                files = {"file_upload": (basename(file.name), file, "text/plain")},
+                self.server_url + f"/project/files/{project_name}/{project_path}?is_dir={is_dir}",
                 headers = self.auth_header,
                 timeout = self.timeout_time
             )
+        else:    
+            with open(file_path, 'rb+') as file:
+                response = requests.put(
+                    self.server_url + f"/project/files/{project_name}/{file_path}?is_entry={is_entry}",
+                    files = {"file_upload": (basename(file.name), file, "text/plain")},
+                    headers = self.auth_header,
+                    timeout = self.timeout_time
+                )    
         return response
 
 
@@ -184,9 +191,10 @@ class WebClient:
                 timeout = self.timeout_time
         )
         while(response.json()['status'] == 'running'):
+            sleep(1)
             response = requests.get(
                 self.server_url + f'/result/{result_id}',
                 timeout = self.timeout_time
             )
-            sleep(1)
+            
         return response
