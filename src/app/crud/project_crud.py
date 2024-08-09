@@ -192,5 +192,9 @@ class Project:
             for d in dirs:
                 subdir[d] = {}
             for f in files:
-                subdir[f] = None
+                subdir[f] = 'file'
         return tree
+
+
+    def set_dependencies(self, dependency_list: list):
+        pass
