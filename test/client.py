@@ -3,11 +3,12 @@ from time import sleep
 from os.path import basename
 
 class WebClient:
-    def __init__(self, user_name: str, password: str, server_url: str):
+    def __init__(self, user_name: str, password: str, server_url: str, timeout_time: int = 3):
         self.user_name = user_name
         self.password = password
         self.server_url = server_url
         self.auth_header = None
+        self.timeout_time = timeout_time
         try:
             requests.get(server_url, timeout=3)
         except:
@@ -21,7 +22,8 @@ class WebClient:
             {
                 'user_name': self.user_name,
                 'password': self.password
-            }
+            },
+            timeout = self.timeout_time
         )
 
         return responce
@@ -34,7 +36,8 @@ class WebClient:
             {
                 'user_name': self.user_name,
                 'password': self.password
-            }
+            },
+            timeout = self.timeout_time
         )
 
         if responce.status_code != 200:
@@ -48,7 +51,8 @@ class WebClient:
     def read(self):
         responce = requests.get(
             self.server_url + '/user',
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
         return responce
 
@@ -64,7 +68,8 @@ class WebClient:
                 'user_name': new_name,
                 'password': self.password
             },
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
 
         if self.log_in().status_code == 200:
@@ -84,7 +89,8 @@ class WebClient:
                 'user_name': self.user_name,
                 'password': new_password
             },
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
 
         if self.log_in().status_code == 200:
@@ -96,7 +102,8 @@ class WebClient:
     def delete(self):
         responce = requests.delete(
             self.server_url + '/user',
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
 
         return responce
@@ -108,7 +115,8 @@ class WebClient:
 
         responce = requests.post(
             self.server_url + f'/project/{project_name}',
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
 
         return responce
@@ -117,7 +125,8 @@ class WebClient:
     def read_project(self, project_name):
         responce = requests.get(
             self.server_url + f'/project/{project_name}',
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
         return responce
 
@@ -128,7 +137,8 @@ class WebClient:
 
         responce = requests.delete(
             self.server_url + f'/project/{project_name}',
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
 
         return responce
@@ -140,7 +150,7 @@ class WebClient:
                 self.server_url + f"/project/files/{project_name}/{basename(file.name)}?is_entry={is_entry}",
                 files = {"file_upload": (basename(file.name), file, "text/plain")},
                 headers = self.auth_header,
-                timeout=3
+                timeout = self.timeout_time
             )
         return response
 
@@ -149,7 +159,7 @@ class WebClient:
         response = requests.delete(
                 self.server_url + f"/project/files/{project_name}/{file_path}",
                 headers = self.auth_header,
-                timeout=3
+                timeout = self.timeout_time
             )
         return response
 
@@ -162,18 +172,21 @@ class WebClient:
     def run_project(self, project_name):
         response = requests.post(
             self.server_url + f'/run/{project_name}',
-            headers = self.auth_header
+            headers = self.auth_header,
+            timeout = self.timeout_time
         )
         if not response.status_code == 200:
             return response
         
         result_id = response.json()['id']
         response = requests.get(
-                self.server_url + f'/result/{result_id}'
+                self.server_url + f'/result/{result_id}',
+                timeout = self.timeout_time
         )
         while(response.json()['status'] == 'running'):
             response = requests.get(
-                self.server_url + f'/result/{result_id}'
+                self.server_url + f'/result/{result_id}',
+                timeout = self.timeout_time
             )
             sleep(1)
         return response
