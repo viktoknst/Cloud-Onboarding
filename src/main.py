@@ -5,6 +5,8 @@ Endpoints will not be used by server unless added to `app`
 
 from fastapi import FastAPI
 
+from docker import DockerClient
+
 from app.routers.discovery import discovery_router
 from app.routers.login import login_router
 from app.routers.project import project_router
@@ -16,10 +18,21 @@ from app.crud.project_crud import Project
 from app.crud.user_crud import User
 from app.crud.result_crud import Result
 
+try:
+    DBProxy.get_instance().client.admin.command('ping')
+except Exception as ex:
+    raise Exception('MongoDB not reachable') from ex
+
+try:
+    DockerClient.from_env().ping()
+except Exception as ex:
+    raise Exception('DockerEngine not reachable') from ex
+
 DB_CLIENT = DBProxy.get_instance()
 Project.set_db(DB_CLIENT.get_db())
 User.set_db(DB_CLIENT.get_db())
 Result.set_db(DB_CLIENT.get_db())
+
 
 app = FastAPI()
 

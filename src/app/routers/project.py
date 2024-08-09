@@ -60,7 +60,7 @@ def delete_project(project_name: str, user: User = Depends(get_user_dependency))
 def upload_code(
         project_name: str,
         file_path: str,
-        file_upload: UploadFile,
+        file_upload: Optional[UploadFile] = None,
         is_dir: Optional[bool] = None,
         is_entry: Optional[bool] = None,
         user: User = Depends(get_user_dependency)
@@ -69,10 +69,13 @@ def upload_code(
     Upload code to project
     '''
     project = get_project(user, project_name)
-    if is_dir:
-        project.add_dir(file_path)
-    else:
-        project.add_file(file_path, file_upload.file, bool(is_entry))
+    try:
+        if is_dir:
+            project.add_dir(file_path)
+        else:
+            project.add_file(file_path, file_upload.file, bool(is_entry))
+    except Exception as ex:
+        raise HTTPException(400, 'Failed to delete file. Are you sure it exits?') from ex
     return {'msg': 'Uploaded file to project', 'file_path': file_path}
 
 

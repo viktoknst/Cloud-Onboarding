@@ -122,9 +122,9 @@ class Project:
 
 
     def add_dir(self, dir_path: str):
-        if os.path.isdir(dir_path):
+        if os.path.isdir(self.source_dir+'/'+dir_path):
             return
-        os.mkdir(dir_path)
+        os.mkdir(self.source_dir+'/'+dir_path)
 
 
     def add_file(self, file_path: str, file: BinaryIO, is_entry: bool):
@@ -152,12 +152,12 @@ class Project:
         Raises:
             ValueError: Path does not exist
         """
-        if not os.path.exists(file_path):
+        if not os.path.exists(self.source_dir+'/'+file_path):
             raise ValueError(f"{file_path} does not exist!")
-        if os.path.isfile(file_path):
-            os.remove(file_path)
+        if os.path.isfile(self.source_dir+'/'+file_path):
+            os.remove(self.source_dir+'/'+file_path)
         else:
-            shutil.rmtree(file_path)
+            shutil.rmtree(self.source_dir+'/'+file_path)
 
 
     def to_jsons(self):
