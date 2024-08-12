@@ -2,6 +2,7 @@
 .obsidian/
 .pylintrc
 /users/*
+!users/.gitkeep
 # Project specific ignores END
 
 
