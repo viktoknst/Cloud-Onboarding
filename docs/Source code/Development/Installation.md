@@ -17,16 +17,40 @@ To run the project, use `./start-server`
 The app depends on both MongoDB and Docker Engine. 
 
 #### MongoDB
-1. Follow the official installation instructions at https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#install-mongodb-community-edition
-2. Ensure the mongo server is running. The app makes use of cob_db as its name for mongo database.
+The MongoDB is ran via Docker compose.
+No installation necessary.
 
 #### Docker 
 The python docker sdk requires an installation of the docker engine.
-While the official installation instructions can be followed, it is suggested to use the following instead
+Its suggested to follow the official installation, however certain follow-up procedures are needed for the project to run.
 
-`sudo apt install docker.io`
+#### 1. Install docker
 
-This will download the latest version of Docker from the Ubuntu archives, unpack it, and then install it on your system.
+Abreviated from the official docker docs:
+
+Remove conflicting packages:
+
+`for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done`
+
+
+This will download the latest version of Docker from the Ubuntu archives, unpack it, and then install it on your system:
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+#### 2. Post install
 
 You can then start the service with `systemctl`:
 
