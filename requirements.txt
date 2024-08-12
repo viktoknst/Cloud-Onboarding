@@ -1,9 +1,0 @@
-# project - relevant
-pymongo
-requests
-docker
-fastapi
-
-# development
-pre-commit
-pytest
