@@ -1,7 +1,7 @@
 # Project specific ignores START
 .obsidian/
 .pylintrc
-.users/
+/users/*
 # Project specific ignores END
 
 
