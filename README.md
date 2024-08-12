@@ -18,8 +18,9 @@ An MVP/demo exists at [this repository](https://github.com/Al1002/cob)
 
 First install the source code via `git clone https://github.com/Al1002/cloud_computing.git`
 
-Then, install python requirements, (either in a virtual environment or otherwise)
-Ex: `pip install -i requirements.txt`
+Then, install python requirements using poetry
+`poetry install`
+Activate poetry using `poetry shell`
 
 To make sure installation is successful, try running `pytest test`
 
