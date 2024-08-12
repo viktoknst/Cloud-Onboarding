@@ -1,8 +1,0 @@
-# project - relevant
-pymongo == 4.8.0
-requests == 2.32.3
-docker == 7.1.0
-fastapi == 0.112.0
-
-# development
-pytest == 8.3.2
