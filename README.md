@@ -12,11 +12,13 @@ An MVP/demo exists at [this repository](https://github.com/Al1002/cob)
 - The user can get information about said instances
 - The user can create and manage running instances of their projects
 
-## Instalation
+## Installation
 
-#### Server instalation
+#### Server installation
 
 First install the source code via `git clone https://github.com/Al1002/cloud_computing.git`
+
+Note: To install the server you will need to install the dependencies first.
 
 Then, install python requirements using poetry `poetry install`
 
@@ -35,14 +37,14 @@ Its suggested to follow the official installation, however certain follow-up pro
 
 #### 1. Install docker
 
-Abreviated from the official docker docs:
+Abreviated from the official docker docs: https://docs.docker.com/engine/install/ubuntu/
 
 Remove conflicting packages:
 
 `for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done`
 
+Add Docker GPG key:
 
-This will download the latest version of Docker from the Ubuntu archives, unpack it, and then install it on your system:
 ```
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -59,6 +61,10 @@ echo \
 sudo apt-get update
 ```
 
+This will download the latest version of Docker from the Ubuntu archives, unpack it, and then install it on your system:
+
+`sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+
 #### 2. Post install
 
 You can then start the service with `systemctl`:
@@ -68,13 +74,13 @@ You can then start the service with `systemctl`:
 
 However, docker will throw wierd issues if only this is done. Ex:
 
-`docker hello-world`
+`docker run hello-world`
 
 will return an error. This is because, by default, docker engine only allows users in the docker group. This is true for the app as well: it can not be ran without `sudo`.
 
 To add ourselves to the docker group, use:
 
-`usermod -aG docker $USER`
+`sudo usermod -aG docker $USER`
 
 This will remove the need to use sudo for docker. This is true globally, so keep this in mind.
 
