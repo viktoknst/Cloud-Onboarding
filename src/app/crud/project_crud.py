@@ -166,11 +166,12 @@ class Project:
                 'id': self.id
             },
             update={'$set':{
-                #'id': id explicitly ommitted
+                #'id': id, explicitly ommitted
                 'name': self.name,
                 'entry_file': self.entry_file,
                 'source_dir': self.source_dir,
-                #'user_id': user_id explicitly ommitted
+                #'user_id': user_id. explicitly ommitted
+                #'project_type': project_type,
             }}
         )
 

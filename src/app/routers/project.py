@@ -28,10 +28,12 @@ def get_project(user: User, project_name: str) -> Project:
 
 
 @project_router.post(ENDPOINTS['project']+'/{project_name}')
-def create_project(project_name: str, project_type: ProjectType = ProjectType.python, user: User = Depends(get_user_dependency)):
+def create_project(project_name: str, project_type: Optional[ProjectType] = None, user: User = Depends(get_user_dependency)):
     '''
     s.e.
     '''
+    if project_type is None:
+        project_type = 'python'
     try:
         project = Project.create(user, project_name, project_type)
     except Exception as ex:
