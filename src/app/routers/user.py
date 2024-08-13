@@ -34,7 +34,7 @@ def read_user(user: User = Depends(get_user_dependency)):
     """
     Endpoint for reading users from db.
     """
-    return {"user": user.to_dict()}
+    return {"user": user.to_dict(), 'projects': user.get_project_list()}
 
 
 @user_router.put(ENDPOINTS['user'])

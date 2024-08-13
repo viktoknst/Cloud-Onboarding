@@ -234,3 +234,6 @@ class User:
         """
         if re.fullmatch(r'^[a-zA-Z0-9 _-]{4,16}$', password) is None:
             raise ValueError("Password is invalid!")
+
+    def get_project_list(self) -> list[str]:
+        return os.listdir(self.dir)

@@ -85,7 +85,7 @@ def upload_code(
         else:
             project.add_file(file_path, file_upload.file, bool(is_entry))
     except Exception as ex:
-        raise HTTPException(400, 'Failed to delete file. Are you sure it exits?') from ex
+        raise HTTPException(400, f'Failed to upload file: {ex}') from ex
     return {'msg': 'Uploaded file to project', 'file_path': file_path}
 
 
