@@ -13,6 +13,11 @@ CLIENT = docker.from_env()
 
 
 def create_detached_instance(p: Project):
+    """
+    Creates a ProjectInstance with an apropriate container based on Project.project_type
+    
+    Returns: ProjectInstance
+    """
     if p.project_type == ProjectType.python:
         image = CLIENT.images.get("python")
         container = CLIENT.containers.create(
@@ -27,11 +32,11 @@ def create_detached_instance(p: Project):
             command=f"node /src/{p.entry_file}",
             volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
         )
-    if p.project_type == ProjectType.js:
+    if p.project_type == ProjectType.bin:
         image = CLIENT.images.get("alpine")
         container = CLIENT.containers.create(
             image.id,
-            command=f"node /src/{p.entry_file}",
+            command=f"./src/{p.entry_file}",
             volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
         )
     instance = ProjectInstance(container)
