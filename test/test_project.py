@@ -30,6 +30,15 @@ class TestProject():
         assert responce.status_code == 200, responce.text # Now works
         get_mock_db.drop_collection('users')
 
+
+    def test_read(self, get_test_project):
+        responce = client.get(
+            '/project/myproject',
+            headers=get_test_project
+        )
+        assert responce.json()['project']['name'] == 'myproject'
+
+
     @pytest.mark.skip(reason="Not in use")
     @mock.patch('os.path.exists', new=always_true)
     def test_update(self, get_test_user):
@@ -40,12 +49,20 @@ class TestProject():
         assert responce.status_code == 200
 
 
+    def test_delete(self, get_test_project):
+        responce = client.delete(
+            '/project/myproject',
+            headers=get_test_project
+        )
+        assert responce.status_code == 200
+
+
     @mock.patch('os.path.exists', new=always_false)
-    @pytest.mark.skip(reason="Requires file opperations")
+    #@pytest.mark.skip(reason="Requires file opperations")
     def test_upload(self, get_test_project):
         with open('test/hello_world.py', 'rb+') as file:
             response = client.put(
-                "/project/myproject/upload?is_entry=yes",
+                "/project/files/myproject/hello_world.py?is_entry=yes",
                 files={"file_upload": ('hello_world.py', file, "text/plain")},
                 headers=get_test_project
             )

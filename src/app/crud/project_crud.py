@@ -176,8 +176,13 @@ class Project:
         shutil.rmtree(self.source_dir)
 
 
-    # TODO ambi name
-    def add_file(self, file: BinaryIO, filename: str, is_entry: bool) -> None:
+    def add_dir(self, dir_path: str):
+        if os.path.isdir(self.source_dir+'/'+dir_path):
+            return
+        os.mkdir(self.source_dir+'/'+dir_path)
+
+
+    def add_file(self, file_path: str, file: BinaryIO, is_entry: bool) -> None:
         """
         Adds a file to the file directory.
         If another file of the same name exists - overwrites it.
@@ -185,15 +190,32 @@ class Project:
         Updates the project in db accordingly.
         Args:
             file (BinaryIO): The file data in binary
-            filename (str): The name to write to
+            file_path (str): The name to write to
             is_entry (bool): Is project entry point
         """
-        file_location = f"{self.source_dir}/{filename}"
+        file_location = f"{self.source_dir}/{file_path}"
         with open(file_location, "wb+") as file_object:
             file_object.write(file.read())
         if is_entry is True:
-            self.entry_file = filename
+            self.entry_file = file_path
             self.update()
+
+
+    def remove_file(self, file_path: str):
+        """Removes file OR directory tree
+
+        Args:
+            file_path (str): the object to delete
+
+        Raises:
+            ValueError: Path does not exist
+        """
+        if not os.path.exists(self.source_dir+'/'+file_path):
+            raise ValueError(f"{file_path} does not exist!")
+        if os.path.isfile(self.source_dir+'/'+file_path):
+            os.remove(self.source_dir+'/'+file_path)
+        else:
+            shutil.rmtree(self.source_dir+'/'+file_path)
 
 
     def to_jsons(self) -> str:
@@ -220,3 +242,24 @@ class Project:
             'source_dir': self.source_dir,
             'user_id': self.user_id,
         }
+
+
+    def read_file_structure(self):
+        """
+        Dir to json-esque dict
+        """
+        tree = {}
+        for root, dirs, files in os.walk(self.source_dir):
+            subdir = tree
+            for part in root.replace(self.source_dir, '').strip(os.sep).split(os.sep):
+                if part:
+                    subdir = subdir.setdefault(part, {})
+            for d in dirs:
+                subdir[d] = {}
+            for f in files:
+                subdir[f] = 'file'
+        return tree
+
+
+    def set_dependencies(self, dependency_list: list):
+        pass

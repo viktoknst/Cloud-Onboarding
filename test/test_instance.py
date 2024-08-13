@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import patch
 import time
 
-from app.services.containerizer.instance import *
+from app.services.containerizer import *
 
 class DummyContainer:
     def __init__(self):

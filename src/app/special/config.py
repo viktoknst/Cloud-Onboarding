@@ -1,6 +1,9 @@
 '''
 Holds congiguration option
 '''
+from os.path import abspath, join, dirname, isdir
+
+from os.path import abspath, join
 
 ENDPOINTS = {
     'discovery'     : '/',
@@ -12,4 +15,6 @@ ENDPOINTS = {
     'result'        : '/result',
 }
 
-USERS_DIRECTORY = '/home/sasho_b/Coding/cob2/users'
+# God awful
+USERS_DIRECTORY = abspath(join(dirname(__file__), "..", "..", "..", "users"))
+assert isdir(USERS_DIRECTORY), f"User directory (/users) does not exist! (is {USERS_DIRECTORY})"
