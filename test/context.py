@@ -81,7 +81,7 @@ def get_test_user(get_mock_db) -> any:
                 'user_name': 'John Doe',
                 'password': 'password1234'}
         )
-    assert responce.status_code == 200
+    assert responce.status_code == 200, responce.text
 
     responce = client.post(
         '/token',
@@ -89,15 +89,22 @@ def get_test_user(get_mock_db) -> any:
             'user_name': 'John Doe',
             'password': 'password1234'}
         )
-    assert responce.status_code == 200
+    assert responce.status_code == 200, responce.text
 
     token = responce.json()['access_token']
     auth_header = {"Authorization": f"Bearer {token}"}
 
     yield auth_header
+<<<<<<< HEAD
 
     if os.path.exists('users/John Doe'):
         shutil.rmtree('users/John Doe')
+=======
+    try:
+        shutil.rmtree('users/John Doe')
+    except:
+        pass
+>>>>>>> b3a50cf (Removed env specific configs)
     get_mock_db.drop_collection('users')
 
 @pytest.fixture
@@ -114,9 +121,20 @@ def get_test_project(get_test_user, get_mock_db) -> any:
             headers=get_test_user,
             params={'is_entry': True}
         )
+<<<<<<< HEAD
     assert response.status_code == 200, response.text
 
     yield get_test_user
     if os.path.exists('users/John Doe/myproject'):
         shutil.rmtree('users/John Doe/myproject')
+=======
+    assert response.status_code == 200, responce.text
+
+    yield get_test_user
+
+    try:
+        shutil.rmtree('users/John Doe/myproject')
+    except:
+        pass
+>>>>>>> b3a50cf (Removed env specific configs)
     get_mock_db.drop_collection('projects')

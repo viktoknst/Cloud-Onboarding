@@ -17,14 +17,13 @@ class TestUser():
         '''
         By getting test user (named john doe) we ensure the name is taken
         '''
-        user = get_test_user
         responce = client.post(
             '/user',
             json={
                 'user_name': 'John Doe',
                 'password': 'password1234'}
         )
-        assert responce.status_code == 409 # Failed to create user: reason
+        assert responce.status_code == 409, responce.status_code # Failed to create user: reason
 
 
     @mock.patch('os.path.exists', new=always_false)
