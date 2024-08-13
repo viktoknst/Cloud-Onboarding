@@ -3,6 +3,7 @@
 .pylintrc
 /users/*
 !users/.gitkeep
+poetry.lock
 # Project specific ignores END
 
 
