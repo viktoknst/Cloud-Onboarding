@@ -6,14 +6,20 @@ import uuid
 from pymongo.database import Database
 
 class Result:
-    '''
-    Result model
-    '''
+    """
+    Object representation of the result from running a project.
+    Handles saving/reading from a db.
+    """
 
     db: Database
 
     @classmethod
     def set_db(cls, db: Database):
+        """Sets the database to be used by the class and all its instances.
+
+        Args:
+            db (Database): A mongo-like db
+        """
         cls.db = db
 
 
@@ -76,7 +82,12 @@ class Result:
             result['result'],
         )
 
+
     def update(self) -> None:
+        """
+        Saves the current state of the object (fields) to the db.
+        Some fields that should not be altered are not saved.
+        """
         self.db['results'].update_one(
             {
                 'id': self.id

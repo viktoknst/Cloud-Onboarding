@@ -1,3 +1,7 @@
+"""
+File for user router.
+"""
+
 from fastapi import APIRouter, HTTPException, Depends
 
 from app.special.config import ENDPOINTS
@@ -13,9 +17,9 @@ User.set_db(DBProxy.get_instance().get_db())
 
 @user_router.post(ENDPOINTS['user'])
 def create_user(u: UserCreate):
-    '''
+    """
     Endpoint for creating users in db.
-    '''
+    """
     try:
         user = User.create(u.user_name, u.password)
     except ValueError as ex:
@@ -27,14 +31,17 @@ def create_user(u: UserCreate):
 
 @user_router.get(ENDPOINTS['user'])
 def read_user(user: User = Depends(get_user_dependency)):
-    '''
+    """
     Endpoint for reading users from db.
-    '''
+    """
     return {"user": user.to_dict()}
 
 
 @user_router.put(ENDPOINTS['user'])
 def update_user(u: UserCreate, user: User = Depends(get_user_dependency)):
+    """
+    Endpoint for updating users in db.
+    """
     user.name = u.user_name
     user.change_password(u.password)
     try:
@@ -48,9 +55,9 @@ def update_user(u: UserCreate, user: User = Depends(get_user_dependency)):
 
 @user_router.delete(ENDPOINTS['user'])
 def delete_user(user: User = Depends(get_user_dependency)):
-    '''
+    """
     Endpoint for deleting users from db.
-    '''
+    """
     try:
         user.delete()
     except Exception as ex:

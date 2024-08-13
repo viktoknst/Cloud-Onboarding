@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+from typing import Optional
+=======
+"""
+File for project router.
+"""
+>>>>>>> main
+
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
+
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
@@ -6,13 +16,20 @@ from app.special.config import ENDPOINTS
 from app.crud.project_crud import Project
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
+<<<<<<< HEAD
 from app.services import containerizer
+=======
+import app.services.containerizer.project as project_service
+>>>>>>> main
 from app.routers.login import get_user_dependency
 
 project_router = APIRouter()
 
 
 def get_project(user: User, project_name: str) -> Project:
+    """
+    Helper for getting project. Throws HTTPException on fail.
+    """
     try:
         return Project.read(user, name=project_name)
     except Exception as ex:
@@ -99,7 +116,15 @@ def update_dependencies():
 
 
 @project_router.post('/run/{project_name}')
+<<<<<<< HEAD
 def run_project(project_name: str, task: BackgroundTasks, user: User =Depends(get_user_dependency)):
+=======
+def run_project(
+        project_name: str,
+        task: BackgroundTasks,
+        user: User = Depends(get_user_dependency)
+    ):
+>>>>>>> main
     '''
     Endpoint for running project. 
     '''

@@ -1,0 +1,27 @@
+[tool.poetry]
+package-mode = false
+name = "cloud-computing"
+version = "0.1.0"
+description = ""
+authors = ["vikto_konst <viktoconst@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pymongo = "4.8.0"
+requests = "2.32.3"
+docker = "7.1.0"
+fastapi = "0.112.0"
+fastapi-cli = "0.0.5"
+python-multipart = "^0.0.9"
+setuptools = "^72.1.0"
+httpx = "^0.27.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.3.2"
+mock = "^5.1.0"
+mongomock = "^4.1.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

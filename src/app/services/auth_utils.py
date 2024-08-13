@@ -5,7 +5,7 @@ import hmac
 import base64
 from hashlib import sha256
 
-SECRET = "secret".encode() # CHANGE THIS
+SECRET = "secret".encode() #  TODO CHANGE THIS
 DEFAULT_EXPIRY = 15 * 60 # 15 mins
 
 
@@ -77,12 +77,12 @@ def unpack_auth_token(token: str):
     return result
 
 
-# returns tuple (Literal["OK"| error string], token dict)
 def validate_auth_token(token: str):
+    # returns tuple (Literal["OK"| error string], token dict)
     try:
         header64s, payload64s, signature64s = token.split('.')
         unpacked = unpack_auth_token(token)
-    except Exception:
+    except Exception: # we are not concerned with the type of error
         return ('Malformed token', None)
 
     if unpacked['payload']['iss'] != 'Bicagis':
