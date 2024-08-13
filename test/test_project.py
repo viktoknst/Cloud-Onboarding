@@ -58,7 +58,7 @@ class TestProject():
 
 
     @mock.patch('os.path.exists', new=always_false)
-    @pytest.mark.skip(reason="Requires file opperations")
+    #@pytest.mark.skip(reason="Requires file opperations")
     def test_upload(self, get_test_project):
         with open('test/hello_world.py', 'rb+') as file:
             response = client.put(

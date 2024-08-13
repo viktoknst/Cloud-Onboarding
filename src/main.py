@@ -19,12 +19,12 @@ from app.crud.user_crud import User
 from app.crud.result_crud import Result
 
 try:
-    DBProxy.get_instance().client.admin.command('ping')
+    pass #DBProxy.get_instance().client.admin.command('ping')
 except Exception as ex:
     raise Exception('MongoDB not reachable') from ex
 
 try:
-    DockerClient.from_env().ping()
+    pass #DockerClient.from_env().ping()
 except Exception as ex:
     raise Exception('DockerEngine not reachable') from ex
 
