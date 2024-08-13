@@ -158,7 +158,7 @@ class WebClient:
         else:    
             with open(file_path, 'rb+') as file:
                 response = requests.put(
-                    self.server_url + f"/project/files/{project_name}/{file_path}?is_entry={is_entry}",
+                    self.server_url + f"/project/files/{project_name}/{project_path}?is_entry={is_entry}",
                     files = {"file_upload": (basename(file.name), file, "text/plain")},
                     headers = self.auth_header,
                     timeout = self.timeout_time
