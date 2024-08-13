@@ -7,19 +7,33 @@ import docker
 from docker.models.containers import Container
 
 from app.crud.result_crud import Result
-from app.crud.project_crud import Project
+from app.crud.project_crud import Project, ProjectType
 
 CLIENT = docker.from_env()
 
 
 def create_detached_instance(p: Project):
-    image = CLIENT.images.get("python")
-
-    container = CLIENT.containers.create(
-        image.id,
-        command=f"python /src/{p.entry_file}",
-        volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
-    )
+    if p.project_type == ProjectType.python:
+        image = CLIENT.images.get("python")
+        container = CLIENT.containers.create(
+            image.id,
+            command=f"python /src/{p.entry_file}",
+            volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
+        )
+    if p.project_type == ProjectType.js:
+        image = CLIENT.images.get("node:16")
+        container = CLIENT.containers.create(
+            image.id,
+            command=f"node /src/{p.entry_file}",
+            volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
+        )
+    if p.project_type == ProjectType.js:
+        image = CLIENT.images.get("alpine")
+        container = CLIENT.containers.create(
+            image.id,
+            command=f"node /src/{p.entry_file}",
+            volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
+        )
     instance = ProjectInstance(container)
     return instance
 
