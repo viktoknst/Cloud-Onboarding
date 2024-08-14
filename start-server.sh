@@ -11,6 +11,11 @@ TARGET_PATH="$SCRIPT_DIR/$RELATIVE_PATH"
 
 #echo "The target path is: $TARGET_PATH"
 
+# Download Docker Images we need
+docker pull python:3.12
+docker pull node:16-alpine
+docker pull alpine:3.20
+
 # Enable mongo container on 28017
 docker compose up -d
 
