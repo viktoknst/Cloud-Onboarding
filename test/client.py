@@ -6,8 +6,8 @@ class WebClient:
     def __init__(self, user_name: str, password: str, server_url: str, timeout_time: int = 3):
         self.user_name = user_name
         self.password = password
-        if not server_url.endswith('/'):
-            server_url += '/'
+        if server_url.endswith('/'):
+            server_url = server_url[:-1]
         self.server_url = server_url
         self.auth_header = None
         self.timeout_time = timeout_time

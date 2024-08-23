@@ -26,12 +26,12 @@ async def token_endpoint(r: LoginSchema):
     try:
         user = User.read(name = r.user_name)
     except Exception as ex:
-        raise HTTPException(status_code=400, detail="Incorrect username or password") from ex
+        raise HTTPException(status_code=401, detail="Incorrect username or password") from ex
 
     hashed_password = auth_utils.hash_password(r.password, user.salt)
 
     if hashed_password != user.password_hash:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
 
     token = auth_utils.gen_auth_token(user.id)
     return {"access_token": token, "token_type": "bearer"}

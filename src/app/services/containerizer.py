@@ -22,21 +22,21 @@ def create_detached_instance(p: Project):
         image = CLIENT.images.get("python:3.12")
         container = CLIENT.containers.create(
             image.id,
-            command=f"timeout --verbose 10 python /src/{p.entry_file}",
+            command=f"timeout -s SIGKILL -v 10 python /src/{p.entry_file}",
             volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
         )
     if p.project_type == ProjectType.js:
         image = CLIENT.images.get("node:16-alpine")
         container = CLIENT.containers.create(
             image.id,
-            command=f"timeout --verbose 10 node /src/{p.entry_file}",
+            command=f"timeout -s SIGKILL 10 node /src/{p.entry_file}",
             volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
         )
     if p.project_type == ProjectType.bin:
         image = CLIENT.images.get("alpine:3.20")
         container = CLIENT.containers.create(
             image.id,
-            command=f"timeout --verbose 10 ./src/{p.entry_file}",
+            command=f"timeout -s SIGKILL 10 ./src/{p.entry_file}",
             volumes={p.source_dir: {'bind': '/src', 'mode': 'ro'}}
         )
     instance = ProjectInstance(container)
