@@ -6,16 +6,15 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTas
 
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, BackgroundTasks
-
 from app.special.config import ENDPOINTS
-from app.crud.project_crud import Project
+from app.crud.project_crud import Project, ProjectType
 from app.crud.result_crud import Result
 from app.crud.user_crud import User
 from app.services import containerizer
 from app.routers.login import get_user_dependency
 
 project_router = APIRouter()
+
 
 
 def get_project(user: User, project_name: str) -> Project:
@@ -29,14 +28,16 @@ def get_project(user: User, project_name: str) -> Project:
 
 
 @project_router.post(ENDPOINTS['project']+'/{project_name}')
-def create_project(project_name: str, user: User = Depends(get_user_dependency)):
+def create_project(project_name: str, project_type: Optional[ProjectType] = None, user: User = Depends(get_user_dependency)):
     '''
     s.e.
     '''
+    if project_type is None:
+        project_type = 'python'
     try:
-        project = Project.create(user, project_name)
+        project = Project.create(user, project_name, project_type)
     except Exception as ex:
-        raise HTTPException(409, 'Failed to create project') from ex
+        raise HTTPException(409, f'Failed to create project: {ex}') from ex
     return {'msg': 'Project created', 'project': project.to_dict()}
 
 
@@ -84,7 +85,7 @@ def upload_code(
         else:
             project.add_file(file_path, file_upload.file, bool(is_entry))
     except Exception as ex:
-        raise HTTPException(400, 'Failed to delete file. Are you sure it exits?') from ex
+        raise HTTPException(400, f'Failed to upload file: {ex}') from ex
     return {'msg': 'Uploaded file to project', 'file_path': file_path}
 
 

@@ -8,10 +8,16 @@ import uuid
 import json
 from typing import BinaryIO
 import shutil
+from enum import Enum
 
 from pymongo.database import Database
 
 from app.crud.user_crud import User
+
+class ProjectType(str, Enum):
+    python = 'python'
+    js = 'js'
+    bin = 'bin'
 
 
 class Project:
@@ -39,7 +45,8 @@ class Project:
             name: str,
             entry_file: str,
             source_dir: str,
-            user_id: str
+            user_id: str,
+            project_type: str
         ):
         """
         Constructor sets fields without checking them. Private.
@@ -56,10 +63,11 @@ class Project:
         self.entry_file = entry_file
         self.source_dir = source_dir
         self.user_id = user_id
+        self.project_type = project_type
 
 
     @classmethod
-    def create(cls, user: User, name: str):
+    def create(cls, user: User, name: str, project_type: ProjectType):
         """
         Creates a project in db and file system.
         Returns the resulting project object.
@@ -101,12 +109,13 @@ class Project:
                 'name': name,
                 'entry_file': None,
                 'source_dir': source_dir,
-                'user_id': user.id
+                'user_id': user.id,
+                'project_type': project_type.value,
             }
         )
         # replace with mktemp -d, creates a randomly named, non-existant directory
         os.mkdir(source_dir)
-        return Project(id, name, None, source_dir, user.id)
+        return Project(id, name, None, source_dir, user.id, project_type)
 
 
     @classmethod
@@ -142,7 +151,8 @@ class Project:
             project_dict['name'],
             project_dict['entry_file'],
             project_dict['source_dir'],
-            project_dict['user_id']
+            project_dict['user_id'],
+            project_dict['project_type']
         )
 
 
@@ -156,11 +166,12 @@ class Project:
                 'id': self.id
             },
             update={'$set':{
-                #'id': id explicitly ommitted
+                #'id': id, explicitly ommitted
                 'name': self.name,
                 'entry_file': self.entry_file,
                 'source_dir': self.source_dir,
-                #'user_id': user_id explicitly ommitted
+                #'user_id': user_id. explicitly ommitted
+                #'project_type': project_type,
             }}
         )
 
@@ -241,6 +252,7 @@ class Project:
             'entry_file': self.entry_file,
             'source_dir': self.source_dir,
             'user_id': self.user_id,
+            'project_type': self.project_type
         }
 
 

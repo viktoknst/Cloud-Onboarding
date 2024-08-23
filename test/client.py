@@ -6,9 +6,12 @@ class WebClient:
     def __init__(self, user_name: str, password: str, server_url: str, timeout_time: int = 3):
         self.user_name = user_name
         self.password = password
+        if not server_url.endswith('/'):
+            server_url += '/'
         self.server_url = server_url
         self.auth_header = None
         self.timeout_time = timeout_time
+        
         try:
             requests.get(server_url, timeout=3)
         except:
@@ -109,13 +112,14 @@ class WebClient:
         return responce
 
 
-    def create_project(self, project_name):
+    def create_project(self, project_name, project_type = 'python'):
         if not self.auth_header:
             return
 
         responce = requests.post(
             self.server_url + f'/project/{project_name}',
             headers = self.auth_header,
+            params={"project_type": project_type},
             timeout = self.timeout_time
         )
 
@@ -154,7 +158,7 @@ class WebClient:
         else:    
             with open(file_path, 'rb+') as file:
                 response = requests.put(
-                    self.server_url + f"/project/files/{project_name}/{file_path}?is_entry={is_entry}",
+                    self.server_url + f"/project/files/{project_name}/{project_path}?is_entry={is_entry}",
                     files = {"file_upload": (basename(file.name), file, "text/plain")},
                     headers = self.auth_header,
                     timeout = self.timeout_time

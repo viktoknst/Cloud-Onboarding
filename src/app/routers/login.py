@@ -3,7 +3,9 @@ Login router. For security and authorization.
 """
 
 from fastapi import Depends, HTTPException, APIRouter
-from fastapi.security import OAuth2PasswordBearer #, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from typing_extensions import Annotated
 
 from app.crud.user_crud import User
 from app.schemas.login import LoginSchema
@@ -11,7 +13,7 @@ from app.services import auth_utils
 
 login_router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 @login_router.post("/token")
@@ -33,6 +35,28 @@ async def token_endpoint(r: LoginSchema):
 
     token = auth_utils.gen_auth_token(user.id)
     return {"access_token": token, "token_type": "bearer"}
+
+
+@login_router.post("/login")
+def login_endpoint(r: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    """
+    Endpoint which takes the user's password and username and returns a JWT.
+    Forward for auth_utils.
+    """
+    # may or may not be vulnerable to timing attacks... TODO
+    try:
+        user = User.read(name = r.username)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail="Incorrect username or password") from ex
+
+    hashed_password = auth_utils.hash_password(r.password, user.salt)
+
+    if hashed_password != user.password_hash:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+
+    token = auth_utils.gen_auth_token(user.id)
+    return {"access_token": token, "token_type": "bearer"}
+
 
 
 def verify_token(token: str):
